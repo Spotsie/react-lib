@@ -22,7 +22,7 @@ jobs:
 #      - name: Install deps and build (with cache)
 #        uses: bahmutov/npm-install@v1
       - name: npm install
-        run: npm run install
+        run: npm install
 
 
       - name: Lint
