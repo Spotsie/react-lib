@@ -11,9 +11,9 @@ interface Props {
   dragSensitivity: number;
 }
 
-type HTMLEvents = {
-  [eventName in keyof HTMLElementEventMap]: (event: any) => void;
-};
+interface HTMLEvents {
+  [eventName: string]: (e: any) => void;
+}
 
 const DragControls = ({ dragSensitivity }: Props) => {
   const isDragging = useRef(false);
@@ -27,7 +27,7 @@ const DragControls = ({ dragSensitivity }: Props) => {
   const dragStart = useRef<MousePosition>({ x: 0, y: 0 });
 
   useEffect(() => {
-    const events: Partial<HTMLEvents> = {
+    const events: HTMLEvents = {
       mousedown: (e: MouseEvent) => {
         isDragging.current = true;
 
@@ -62,7 +62,7 @@ const DragControls = ({ dragSensitivity }: Props) => {
     Object.entries(events).forEach(([eventName, eventFunction]) =>
       canvas.addEventListener(
         eventName as keyof HTMLElementEventMap,
-        eventFunction as any
+        eventFunction
       )
     );
 
@@ -70,7 +70,7 @@ const DragControls = ({ dragSensitivity }: Props) => {
       Object.entries(events).forEach(([eventName, eventFunction]) =>
         canvas.removeEventListener(
           eventName as keyof HTMLElementEventMap,
-          eventFunction as any
+          eventFunction
         )
       );
     };
