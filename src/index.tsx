@@ -1,15 +1,11 @@
 import { Zone } from 'proto-all-js/deployment/organization_pb';
 import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
-import React, { CSSProperties, FC, ReactNode } from 'react';
+import React, { CSSProperties, FC, ReactNode, Ref } from 'react';
 import { LineDashedMaterial } from 'three';
 import TimelineContainer from './Timeline/TimelineContainer';
 
-export interface Props
-  extends React.ForwardRefExoticComponent<
-    TimelineProps & React.RefAttributes<HTMLDivElement>
-  > {}
-
 export interface TimelineProps {
+  ref: Ref<HTMLDivElement>;
   timeFrame: { start: Date; end: Date };
   timelineData: { [id: number]: LocationHistoryRecord.AsObject[] };
   labels: { [id: number]: ReactNode };

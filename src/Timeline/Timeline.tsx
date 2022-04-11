@@ -113,7 +113,7 @@ const Timeline = ({
   selectedZone,
 
   onClickZone,
-}: Omit<TimelineProps, 'labels'>) => {
+}: Omit<TimelineProps, 'labels' | 'ref'>) => {
   const { gl, invalidate } = useThree(({ gl, invalidate }) => ({
     gl,
     invalidate,
