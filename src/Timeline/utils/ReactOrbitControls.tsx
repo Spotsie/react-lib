@@ -3,10 +3,10 @@ import {
   ReactThreeFiber,
   useFrame,
   useThree,
-} from "@react-three/fiber";
-import * as React from "react";
-import type { Camera, Event, Vector3 } from "three";
-import { OrbitControls as OrbitControlsImpl } from "./OrbitControls";
+} from '@react-three/fiber';
+import * as React from 'react';
+import type { Camera, Event, Vector3 } from 'three';
+import { OrbitControls as OrbitControlsImpl } from './OrbitControls';
 
 export type OrbitControlsProps = Omit<
   ReactThreeFiber.Overwrite<
@@ -25,7 +25,7 @@ export type OrbitControlsProps = Omit<
       maxPan: Vector3;
     }
   >,
-  "ref"
+  'ref'
 >;
 
 export const OrbitControls = React.forwardRef<
@@ -60,7 +60,7 @@ export const OrbitControls = React.forwardRef<
     const explCamera = camera || defaultCamera;
     const explDomElement =
       domElement ||
-      (typeof events.connected !== "boolean"
+      (typeof events.connected !== 'boolean'
         ? events.connected
         : gl.domElement);
     const controls = React.useMemo(
@@ -89,22 +89,22 @@ export const OrbitControls = React.forwardRef<
           onChange(e);
         }
       };
-      controls.addEventListener("change", callback);
+      controls.addEventListener('change', callback);
       if (onStart) {
-        controls.addEventListener("start", onStart);
+        controls.addEventListener('start', onStart);
       }
       if (onEnd) {
-        controls.addEventListener("end", onEnd);
+        controls.addEventListener('end', onEnd);
       }
 
       return () => {
         if (onStart) {
-          controls.removeEventListener("start", onStart);
+          controls.removeEventListener('start', onStart);
         }
         if (onEnd) {
-          controls.removeEventListener("end", onEnd);
+          controls.removeEventListener('end', onEnd);
         }
-        controls.removeEventListener("change", callback);
+        controls.removeEventListener('change', callback);
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [onChange, onStart, onEnd]);
@@ -115,6 +115,7 @@ export const OrbitControls = React.forwardRef<
         set({ controls });
         return () => set({ controls: old });
       }
+      return;
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [makeDefault, controls]);
 

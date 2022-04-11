@@ -91,7 +91,10 @@ const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
               <Canvas
                 camera={{
                   position: new Vector3(timeFrameCenter, 0, 3),
-                  lookAt: (x) => (x = timeFrameCenter),
+                  ///@ts-ignore
+                  lookAt: (x) => {
+                    x = timeFrameCenter;
+                  },
                 }}
                 gl={{
                   preserveDrawingBuffer: true,
