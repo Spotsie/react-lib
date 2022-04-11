@@ -7,8 +7,6 @@ import {
   MeshBasicMaterial,
   Group,
   BufferGeometry,
-  MOUSE,
-  Vector3,
 } from 'three';
 import TimeMarkers from './TimeMarkers';
 import { Zone } from 'proto-all-js/deployment/organization_pb';
@@ -16,7 +14,6 @@ import TimelineTracks from './TimelineTracks';
 import add from 'date-fns/add';
 import React from 'react';
 import ScrollControls from './utils/ScrollControls';
-import { OrbitControls } from './utils/ReactOrbitControls';
 import useCameraUpdate from './utils/useCameraUpdate';
 import { TimelineProps } from '..';
 import {
@@ -25,6 +22,7 @@ import {
   TIMELINE_ID,
   NON_HIGHLIGHTED_COLOR,
 } from './constants';
+import DragControls from './utils/DragControls';
 
 interface TooltipData {
   duration: number;
@@ -374,22 +372,7 @@ const Timeline = ({
         </group>
       </group>
 
-      <OrbitControls
-        enableDamping={false}
-        enableRotate={false}
-        enableZoom={false}
-        minPan={
-          new Vector3(Number.MIN_SAFE_INTEGER, 0, Number.MIN_SAFE_INTEGER)
-        }
-        maxPan={
-          new Vector3(Number.MAX_SAFE_INTEGER, 0, Number.MAX_SAFE_INTEGER)
-        }
-        mouseButtons={{
-          LEFT: MOUSE.PAN,
-          MIDDLE: MOUSE.DOLLY,
-          RIGHT: MOUSE.ROTATE,
-        }}
-      />
+      <DragControls dragSensitivity={1} />
 
       <ScrollControls
         zoomSensitivity={zoomSensitivity}

@@ -62,7 +62,7 @@ const DragControls = ({ dragSensitivity }: Props) => {
     Object.entries(events).forEach(([eventName, eventFunction]) =>
       canvas.addEventListener(
         eventName as keyof HTMLElementEventMap,
-        eventFunction
+        eventFunction as any
       )
     );
 
@@ -70,7 +70,7 @@ const DragControls = ({ dragSensitivity }: Props) => {
       Object.entries(events).forEach(([eventName, eventFunction]) =>
         canvas.removeEventListener(
           eventName as keyof HTMLElementEventMap,
-          eventFunction
+          eventFunction as any
         )
       );
     };
