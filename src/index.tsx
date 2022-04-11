@@ -1,7 +1,4 @@
 import React, { FC, HTMLAttributes, ReactChild } from 'react';
-export {Map} from './map/Map';
-export * from './map/metadata';
-export * from './map/geojson';
 export interface Props extends HTMLAttributes<HTMLDivElement> {
   /** custom content, defaults to 'the snozzberries taste like snozzberries' */
   children?: ReactChild;
@@ -15,8 +12,3 @@ export interface Props extends HTMLAttributes<HTMLDivElement> {
 export const Thing: FC<Props> = ({ children }) => {
   return <div>{children || `the snozzberries taste like snozzberries`}</div>;
 };
-
-
-
-
-
