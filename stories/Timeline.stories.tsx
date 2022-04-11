@@ -1,7 +1,4 @@
 import { Meta, Story } from '@storybook/react';
-import TimelineContainer, {
-  TimelineProps,
-} from '../src/Timeline/TimelineContainer';
 import {
   colors,
   labels,
@@ -9,6 +6,7 @@ import {
   timelineData,
   zoneIds,
 } from '../src/Timeline/defaults';
+import { TimelineContainer, TimelineProps } from '../src/index';
 
 const meta: Meta = {
   title: 'Timeline',

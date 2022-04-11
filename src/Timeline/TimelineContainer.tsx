@@ -11,7 +11,7 @@ import {
   TOOLTIP_ID,
 } from './constants';
 
-const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
+export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
   (
     {
       timeFrame,
@@ -138,5 +138,3 @@ const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
     );
   }
 );
-
-export default TimelineContainer;
