@@ -10,12 +10,6 @@ import {
   MOUSE,
   Vector3,
 } from 'three';
-import {
-  TimelineProps,
-  TIMELINE_ID,
-  TIMELINE_LABELS_ID,
-  TOOLTIP_ID,
-} from './TimelineContainer';
 import TimeMarkers from './TimeMarkers';
 import { Zone } from 'proto-all-js/deployment/organization_pb';
 import TimelineTracks from './TimelineTracks';
@@ -24,6 +18,13 @@ import React from 'react';
 import ScrollControls from './utils/ScrollControls';
 import { OrbitControls } from './utils/ReactOrbitControls';
 import useCameraUpdate from './utils/useCameraUpdate';
+import { TimelineProps } from '..';
+import {
+  TIMELINE_LABELS_ID,
+  TOOLTIP_ID,
+  TIMELINE_ID,
+  NON_HIGHLIGHTED_COLOR,
+} from './constants';
 
 interface TooltipData {
   duration: number;
@@ -92,8 +93,6 @@ const defaultDateLabelStyle: CSSProperties = {
   fontSize: '0.75rem',
   top: '20px',
 };
-
-export const NON_HIGHLIGHTED_COLOR = 'gray';
 
 const Timeline = ({
   timeFrame,

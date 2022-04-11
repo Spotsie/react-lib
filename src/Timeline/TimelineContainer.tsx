@@ -1,40 +1,15 @@
-import { CSSProperties, forwardRef, Fragment, ReactNode } from 'react';
+import { forwardRef, Fragment } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { LineDashedMaterial, Vector3 } from 'three';
-import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
+import { Vector3 } from 'three';
 import Timeline from './Timeline';
-import { Zone } from 'proto-all-js/deployment/organization_pb';
 import React from 'react';
-
-export interface TimelineProps {
-  timeFrame: { start: Date; end: Date };
-  timelineData: { [id: number]: LocationHistoryRecord.AsObject[] };
-  labels: { [id: number]: ReactNode };
-
-  zoomSensitivity?: number;
-
-  timeMarkerStyle?: Partial<LineDashedMaterial>;
-  timeMarkerLabelStyle?: CSSProperties;
-  dateMarkerStyle?: Partial<LineDashedMaterial>;
-  dateMarkerLabelStyle?: CSSProperties;
-  trackerIdStyle?: CSSProperties;
-
-  trackHeight?: number;
-  trackGap?: number;
-  trackTopOffset?: number;
-
-  colors: string[];
-  zoneIds: Zone.AsObject[];
-
-  selectedZone: number | null;
-
-  onClickZone(zoneId: number): void;
-}
-
-export const TIMELINE_ID = 'timeline-component';
-export const TIMELINE_PARENT_ID = 'timeline-parent';
-export const TOOLTIP_ID = 'timeline-tooltip';
-export const TIMELINE_LABELS_ID = 'timeline-labels';
+import { TimelineProps } from '..';
+import {
+  TIMELINE_ID,
+  TIMELINE_LABELS_ID,
+  TIMELINE_PARENT_ID,
+  TOOLTIP_ID,
+} from './constants';
 
 const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
   (

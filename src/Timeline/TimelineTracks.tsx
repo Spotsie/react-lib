@@ -5,7 +5,7 @@ import React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import { BufferGeometry, Color, Mesh, MeshBasicMaterial, Vector2 } from 'three';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { NON_HIGHLIGHTED_COLOR } from './Timeline';
+import { NON_HIGHLIGHTED_COLOR } from './constants';
 
 interface TrackProps {
   locationRecords: { [id: number]: LocationHistoryRecord.AsObject[] };

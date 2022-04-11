@@ -1,19 +1,38 @@
-import React, { FC, HTMLAttributes, ReactChild } from 'react';
-import TimelineContainer, { TimelineProps } from './Timeline/TimelineContainer';
+import { Zone } from 'proto-all-js/deployment/organization_pb';
+import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
+import React, { CSSProperties, FC, ReactNode } from 'react';
+import { LineDashedMaterial } from 'three';
+import TimelineContainer from './Timeline/TimelineContainer';
 
-export interface Props extends HTMLAttributes<HTMLDivElement> {
-  /** custom content, defaults to 'the snozzberries taste like snozzberries' */
-  children?: ReactChild;
+export interface Props
+  extends React.ForwardRefExoticComponent<
+    TimelineProps & React.RefAttributes<HTMLDivElement>
+  > {}
+
+export interface TimelineProps {
+  timeFrame: { start: Date; end: Date };
+  timelineData: { [id: number]: LocationHistoryRecord.AsObject[] };
+  labels: { [id: number]: ReactNode };
+
+  zoomSensitivity?: number;
+
+  timeMarkerStyle?: Partial<LineDashedMaterial>;
+  timeMarkerLabelStyle?: CSSProperties;
+  dateMarkerStyle?: Partial<LineDashedMaterial>;
+  dateMarkerLabelStyle?: CSSProperties;
+  trackerIdStyle?: CSSProperties;
+
+  trackHeight?: number;
+  trackGap?: number;
+  trackTopOffset?: number;
+
+  colors: string[];
+  zoneIds: Zone.AsObject[];
+
+  selectedZone: number | null;
+
+  onClickZone(zoneId: number): void;
 }
-
-// Please do not use types off of a default export module or else Storybook Docs will suffer.
-// see: https://github.com/storybookjs/storybook/issues/9556
-/**
- * A custom Thing component. Neat!
- */
-export const Thing: FC<Props> = ({ children }) => {
-  return <div>{children || `the snozzberries taste like snozzberries`}</div>;
-};
 
 export const Timeline: FC<TimelineProps> = (props) => {
   return <TimelineContainer {...props} />;

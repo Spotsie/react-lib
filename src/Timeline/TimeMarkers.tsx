@@ -8,10 +8,10 @@ import {
   Mesh,
   Vector3,
 } from 'three';
-import { TIMELINE_ID, TIMELINE_PARENT_ID } from './TimelineContainer';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import React from 'react';
 import useCameraUpdate from './utils/useCameraUpdate';
+import { TIMELINE_ID, TIMELINE_PARENT_ID } from './constants';
 
 interface Props {
   period: { start: number; end: number };
