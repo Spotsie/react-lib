@@ -11,7 +11,7 @@ import {
   TOUCH,
   Vector2,
   Vector3,
-} from "three";
+} from 'three';
 
 // This set of controls performs orbiting, dollying (zooming), and panning.
 // Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).
@@ -69,10 +69,10 @@ class OrbitControls extends EventDispatcher {
   reverseOrbit = false; // true if you want to reverse the orbit to mouse drag from left to right = orbits left
   // The four arrow keys
   keys = {
-    LEFT: "ArrowLeft",
-    UP: "ArrowUp",
-    RIGHT: "ArrowRight",
-    BOTTOM: "ArrowDown",
+    LEFT: 'ArrowLeft',
+    UP: 'ArrowUp',
+    RIGHT: 'ArrowRight',
+    BOTTOM: 'ArrowDown',
   };
   // Mouse buttons
   mouseButtons = {
@@ -176,7 +176,7 @@ class OrbitControls extends EventDispatcher {
       scope.object.position.distanceTo(scope.target);
 
     this.listenToKeyEvents = (domElement: HTMLElement): void => {
-      domElement.addEventListener("keydown", onKeyDown);
+      domElement.addEventListener('keydown', onKeyDown);
       this._domElementKeyEvents = domElement;
     };
 
@@ -342,28 +342,28 @@ class OrbitControls extends EventDispatcher {
       // disables touch scroll
       // touch-action needs to be defined for pointer events to work on mobile
       // https://stackoverflow.com/a/48254578
-      scope.domElement.style.touchAction = "none";
-      scope.domElement.addEventListener("contextmenu", onContextMenu);
-      scope.domElement.addEventListener("pointerdown", onPointerDown);
-      scope.domElement.addEventListener("pointercancel", onPointerCancel);
-      scope.domElement.addEventListener("wheel", onMouseWheel);
+      scope.domElement.style.touchAction = 'none';
+      scope.domElement.addEventListener('contextmenu', onContextMenu);
+      scope.domElement.addEventListener('pointerdown', onPointerDown);
+      scope.domElement.addEventListener('pointercancel', onPointerCancel);
+      scope.domElement.addEventListener('wheel', onMouseWheel);
     };
 
     this.dispose = (): void => {
-      scope.domElement?.removeEventListener("contextmenu", onContextMenu);
-      scope.domElement?.removeEventListener("pointerdown", onPointerDown);
-      scope.domElement?.removeEventListener("pointercancel", onPointerCancel);
-      scope.domElement?.removeEventListener("wheel", onMouseWheel);
+      scope.domElement?.removeEventListener('contextmenu', onContextMenu);
+      scope.domElement?.removeEventListener('pointerdown', onPointerDown);
+      scope.domElement?.removeEventListener('pointercancel', onPointerCancel);
+      scope.domElement?.removeEventListener('wheel', onMouseWheel);
       scope.domElement?.ownerDocument.removeEventListener(
-        "pointermove",
+        'pointermove',
         onPointerMove
       );
       scope.domElement?.ownerDocument.removeEventListener(
-        "pointerup",
+        'pointerup',
         onPointerUp
       );
       if (scope._domElementKeyEvents !== null) {
-        scope._domElementKeyEvents.removeEventListener("keydown", onKeyDown);
+        scope._domElementKeyEvents.removeEventListener('keydown', onKeyDown);
       }
       //scope.dispatchEvent( { type: 'dispose' } ); // should this be added here?
     };
@@ -374,9 +374,9 @@ class OrbitControls extends EventDispatcher {
 
     const scope = this;
 
-    const changeEvent = { type: "change" };
-    const startEvent = { type: "start" };
-    const endEvent = { type: "end" };
+    const changeEvent = { type: 'change' };
+    const startEvent = { type: 'start' };
+    const endEvent = { type: 'end' };
 
     const STATE = {
       NONE: -1,
@@ -520,7 +520,7 @@ class OrbitControls extends EventDispatcher {
         } else {
           // camera neither orthographic nor perspective
           console.warn(
-            "WARNING: OrbitControls.js encountered an unknown camera type - pan disabled."
+            'WARNING: OrbitControls.js encountered an unknown camera type - pan disabled.'
           );
           scope.enablePan = false;
         }
@@ -545,7 +545,7 @@ class OrbitControls extends EventDispatcher {
         zoomChanged = true;
       } else {
         console.warn(
-          "WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled."
+          'WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.'
         );
         scope.enableZoom = false;
       }
@@ -569,7 +569,7 @@ class OrbitControls extends EventDispatcher {
         zoomChanged = true;
       } else {
         console.warn(
-          "WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled."
+          'WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.'
         );
         scope.enableZoom = false;
       }
@@ -780,18 +780,18 @@ class OrbitControls extends EventDispatcher {
 
       if (pointers.length === 0) {
         scope.domElement?.ownerDocument.addEventListener(
-          "pointermove",
+          'pointermove',
           onPointerMove
         );
         scope.domElement?.ownerDocument.addEventListener(
-          "pointerup",
+          'pointerup',
           onPointerUp
         );
       }
 
       addPointer(event);
 
-      if (event.pointerType === "touch") {
+      if (event.pointerType === 'touch') {
         onTouchStart(event);
       } else {
         onMouseDown(event);
@@ -801,7 +801,7 @@ class OrbitControls extends EventDispatcher {
     function onPointerMove(event: PointerEvent) {
       if (scope.enabled === false) return;
 
-      if (event.pointerType === "touch") {
+      if (event.pointerType === 'touch') {
         onTouchMove(event);
       } else {
         onMouseMove(event);
@@ -815,11 +815,11 @@ class OrbitControls extends EventDispatcher {
         scope.domElement?.releasePointerCapture(event.pointerId);
 
         scope.domElement?.ownerDocument.removeEventListener(
-          "pointermove",
+          'pointermove',
           onPointerMove
         );
         scope.domElement?.ownerDocument.removeEventListener(
-          "pointerup",
+          'pointerup',
           onPointerUp
         );
       }

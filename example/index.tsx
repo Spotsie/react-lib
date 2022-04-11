@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Thing } from '../.';
-import TimelineContainer from '../src/Timeline/TimelineContainer';
+import { TimelineContainer } from '../dist';
 import {
   colors,
   labels,
@@ -13,7 +12,6 @@ import {
 const App = () => {
   return (
     <div>
-      <Thing />
       <TimelineContainer
         timeFrame={timeFrame}
         timelineData={timelineData}

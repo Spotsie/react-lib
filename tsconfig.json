@@ -4,7 +4,6 @@
   "compilerOptions": {
     "target": "es6",
     "lib": ["es2019", "dom"],
-    "module": "es6",
     "importHelpers": true,
     // output .d.ts declaration files for consumers
     "declaration": true,
