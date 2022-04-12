@@ -1,14 +1,15 @@
 import { ReactNode } from 'react';
 import React from 'react';
 import { Zone } from 'proto-all-js/deployment/organization_pb';
-import * as timelineDataJson from './timelineData.json';
-import * as zoneData from './zoneData.json';
+// import * as timelineDataJson from './timelineData.json';
+// import * as zoneData from './zoneData.json';
 import { LocationHistory } from 'proto-all-js/location/service_pb';
 import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
 
-const timelineData: Array<[number, LocationHistory.AsObject]> = (
-  timelineDataJson as any
-).default;
+// const timelineData: Array<[number, LocationHistory.AsObject]> = (
+//   timelineDataJson as any
+// ).default;
+const timelineData: Array<[number, LocationHistory.AsObject]> = [];
 
 export const colors: string[] = [
   '#f6ad55',
@@ -45,7 +46,8 @@ export const colors: string[] = [
   '#d53f8c',
 ];
 
-export const zoneIds: Zone.AsObject[] = (zoneData as any).default;
+// export const zoneIds: Zone.AsObject[] = (zoneData as any).default;
+export const zoneIds: Zone.AsObject[] = [];
 
 export const timeFrame = {
   start: new Date(2022, 2, 29),
