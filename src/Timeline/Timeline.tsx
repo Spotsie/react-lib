@@ -368,12 +368,14 @@ const Timeline = ({
     const timeFrameStart = new Date(timeFrame.start).getTime() / 1000;
     const timeFrameEnd = new Date(timeFrame.end).getTime() / 1000;
 
-    if (
-      cameraStart <= Math.floor(timeFrameStart / round) * round ||
-      cameraEnd >= Math.ceil(timeFrameEnd / round) * round
-    ) {
+    if (cameraStart <= Math.floor(timeFrameStart / round) * round) {
       onScroll({
         start: new Date(cameraStart * 1000),
+      });
+      return;
+    }
+    if (cameraEnd >= Math.ceil(timeFrameEnd / round) * round) {
+      onScroll({
         end: new Date(cameraEnd * 1000),
       });
     }
