@@ -111,7 +111,8 @@ const Timeline = ({
   selectedZone,
 
   onClickZone,
-}: Omit<TimelineProps, 'labels' | 'ref'>) => {
+  onScroll,
+}: Omit<TimelineProps, 'labels'>) => {
   const { gl, invalidate } = useThree(({ gl, invalidate }) => ({
     gl,
     invalidate,
@@ -143,7 +144,7 @@ const Timeline = ({
     camera.updateProjectionMatrix();
 
     invalidate();
-  }, [camera, gl.domElement.clientWidth, invalidate, timeFrame]);
+  }, []);
 
   const markers = useMemo(() => {
     const currentScaled =
@@ -355,6 +356,28 @@ const Timeline = ({
 
     onClickZone(hoveredMesh.userData.zone.id);
   };
+
+  useEffect(() => {
+    const cameraStart =
+      camera.position.x - (gl.domElement.clientWidth * camera.scale.x) / 2;
+    const cameraEnd =
+      camera.position.x + (gl.domElement.clientWidth * camera.scale.x) / 2;
+
+    const round = gl.domElement.clientWidth * camera.scale.x;
+
+    const timeFrameStart = new Date(timeFrame.start).getTime() / 1000;
+    const timeFrameEnd = new Date(timeFrame.end).getTime() / 1000;
+
+    if (
+      cameraStart <= Math.floor(timeFrameStart / round) * round ||
+      cameraEnd >= Math.ceil(timeFrameEnd / round) * round
+    ) {
+      onScroll({
+        start: new Date(cameraStart * 1000),
+        end: new Date(cameraEnd * 1000),
+      });
+    }
+  }, [camera.position.x]);
 
   return (
     <>

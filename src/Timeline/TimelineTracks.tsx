@@ -108,13 +108,29 @@ const TimelineTracks = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasHeight, gl.domElement.clientHeight, locationRecords]);
 
+  useEffect(() => {
+    meshRefs.current.forEach((mesh) => {
+      mesh.position.setX(initialTrackXPos);
+      mesh.updateMatrix();
+    });
+  }, [initialTrackXPos]);
+
+  useEffect(() => {
+    meshRefs.current.forEach((mesh) => {
+      let color = new Color(colors[mesh.userData.zone.id - 1]);
+      if (selectedZone !== null && selectedZone !== mesh.userData.zone) {
+        color = new Color(NON_HIGHLIGHTED_COLOR);
+      }
+      color.convertSRGBToLinear();
+
+      (mesh as Mesh<BufferGeometry, MeshBasicMaterial>).material.color = color;
+    });
+  }, [selectedZone]);
+
   const render = useMemo(
     () =>
       zoneIds.map(({ id: zoneId }, index) => {
         let color = new Color(colors[zoneId - 1]);
-        if (selectedZone !== null && selectedZone !== zoneId) {
-          color = new Color(NON_HIGHLIGHTED_COLOR);
-        }
         color.convertSRGBToLinear();
 
         return (
@@ -133,7 +149,7 @@ const TimelineTracks = ({
         );
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [colors, selectedZone, zoneIds]
+    [colors, zoneIds]
   );
 
   return <>{render}</>;
