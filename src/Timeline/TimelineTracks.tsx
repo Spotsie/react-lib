@@ -116,9 +116,9 @@ const TimelineTracks = ({
   }, [initialTrackXPos]);
 
   useEffect(() => {
-    meshRefs.current.forEach((mesh) => {
-      let color = new Color(colors[mesh.userData.zone.id - 1]);
-      if (selectedZone !== null && selectedZone !== mesh.userData.zone) {
+    meshRefs.current.forEach((mesh, index) => {
+      let color = new Color(colors[index]);
+      if (selectedZone !== null && selectedZone !== mesh.userData.zone?.id) {
         color = new Color(NON_HIGHLIGHTED_COLOR);
       }
       color.convertSRGBToLinear();
