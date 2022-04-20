@@ -24,6 +24,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
       colors,
       selectedZone,
       onClickZone,
+      zoneIds,
       ...props
     }: TimelineProps,
     ref
@@ -31,7 +32,9 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
     const timeFrameCenter =
       (timeFrame.start.getTime() + timeFrame.end.getTime()) / 2 / 1000;
 
-    return (
+    return zoneIds.length !== 0 &&
+      Object.keys(timelineData).length !== 0 &&
+      colors.length !== 0 ? (
       <>
         <div
           id={TIMELINE_PARENT_ID}
@@ -93,6 +96,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
                   timeFrame={timeFrame}
                   selectedZone={selectedZone}
                   onClickZone={onClickZone}
+                  zoneIds={zoneIds}
                   {...props}
                 />
               </Canvas>
@@ -135,6 +139,8 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
           id={TOOLTIP_ID}
         />
       </>
+    ) : (
+      <></>
     );
   }
 );
