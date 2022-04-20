@@ -130,7 +130,7 @@ const TimelineTracks = ({
   const render = useMemo(
     () =>
       zoneIds.map(({ id: zoneId }, index) => {
-        let color = new Color(colors[zoneId - 1]);
+        let color = new Color(colors[index]);
         color.convertSRGBToLinear();
 
         return (
