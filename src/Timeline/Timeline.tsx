@@ -152,6 +152,10 @@ const Timeline = ({
     const endScaled =
       camera.position.x + (gl.domElement.clientWidth * camera.scale.x) / 2;
 
+    if (isNaN(currentScaled) || isNaN(endScaled)) {
+      return <></>;
+    }
+
     let currentCameraTime = Number(currentScaled.toFixed(1));
     let endCameraTime = Number(endScaled.toFixed(1));
 
@@ -192,6 +196,10 @@ const Timeline = ({
       camera.position.x - (gl.domElement.clientWidth * camera.scale.x) / 2;
     const endScaled =
       camera.position.x + (gl.domElement.clientWidth * camera.scale.x) / 2;
+
+    if (isNaN(currentScaled) || isNaN(endScaled)) {
+      return <></>;
+    }
 
     let currentCameraTime = Number(currentScaled.toFixed(1));
     let endCameraTime = Number(endScaled.toFixed(1));
