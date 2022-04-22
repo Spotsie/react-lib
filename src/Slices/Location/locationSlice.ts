@@ -75,4 +75,4 @@ const locationSlice = createSlice({
       }),
 });
 
-export default locationSlice.reducer;
+export const locationReducer = locationSlice.reducer;
