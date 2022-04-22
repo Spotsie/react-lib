@@ -7,7 +7,7 @@ import { BufferGeometry, Color, Mesh, MeshBasicMaterial, Vector2 } from 'three';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { NON_HIGHLIGHTED_COLOR } from './constants';
 
-interface TrackProps {
+interface Props {
   locationRecords: { [id: number]: LocationHistoryRecord.AsObject[] };
 
   trackHeight: number;
@@ -28,7 +28,7 @@ const TimelineTracks = ({
   colors,
   zoneIds,
   selectedZone,
-}: TrackProps) => {
+}: Props) => {
   const meshRefs = useRef<Mesh[]>([]);
 
   const { gl, invalidate } = useThree(({ gl, invalidate }) => ({
@@ -84,6 +84,9 @@ const TimelineTracks = ({
           end: trackRight,
         };
 
+        if (!geosByZoneId[record.zone]) {
+          geosByZoneId[record.zone] = [];
+        }
         geosByZoneId[record.zone].push(geo);
       });
     });
