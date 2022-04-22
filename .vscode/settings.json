@@ -1,0 +1,21 @@
+{
+  "files.exclude": {
+    "**/*.log": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.cache": true,
+    "**/dist": true,
+    "example/.parcel-cache": true,
+    "node_modules/tsdx/templates/react-with-storybook/example/**/node_modules": true,
+    "node_modules/tsdx/templates/react-with-storybook/example/**/.cache": true,
+    "node_modules/tsdx/templates/react-with-storybook/example/**/dist": true,
+    "node_modules/tsdx/templates/react/example/**/node_modules": true,
+    "node_modules/tsdx/templates/react/example/**/.cache": true,
+    "node_modules/tsdx/templates/react/example/**/dist": true,
+    ".idea/shelf/": true,
+    ".idea/workspace.xml": true,
+    ".idea/dataSources/": true,
+    ".idea/dataSources.local.xml": true,
+    ".idea/httpRequests/": true
+  }
+}

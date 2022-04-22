@@ -30,4 +30,4 @@ export interface TimelineProps {
   onScroll(timeFrame: { start?: Date; end?: Date }): void;
 }
 
-export * from './Timeline/TimelineContainer';
+export * from './TimelineContainer';
