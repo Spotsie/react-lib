@@ -3,14 +3,14 @@ import { entityArrayToObject, EntityMap } from '../utils/arrObjConversion';
 import { Zone } from 'proto-all-js/deployment/organization_pb';
 import { getAllZones } from './zoneReducers';
 
-export interface State {
+export interface ZoneState {
   zones: EntityMap<Zone.AsObject>;
 
   loading: boolean;
   loaded: boolean;
 }
 
-const initialState: State = {
+const initialState: ZoneState = {
   zones: {},
 
   loading: true,

@@ -8,7 +8,7 @@ import {
 } from '../utils/cache';
 import { Interval } from '../utils/cache';
 
-export interface State {
+export interface LocationState {
   locationRecords: EntityMap<LocationHistoryRecord.AsObject[]>;
   cache: EntityMap<Interval[]>;
 
@@ -16,7 +16,7 @@ export interface State {
   loaded: boolean;
 }
 
-const initialState: State = {
+const initialState: LocationState = {
   locationRecords: {},
   cache: {},
 
