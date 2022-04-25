@@ -37,4 +37,4 @@ const zoneSlice = createSlice({
       }),
 });
 
-export default zoneSlice.reducer;
+export const zoneReducer = zoneSlice.reducer;
