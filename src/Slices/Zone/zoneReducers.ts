@@ -21,7 +21,7 @@ export const getAllZones = createAsyncThunk<
     const response = await grpcUnaryRequest(DeploymentApi.GetZones, req);
 
     return response.toObject().zonesList;
-  } catch (err: any) {
-    return thunkAPI.rejectWithValue(err.msg);
+  } catch (err) {
+    return thunkAPI.rejectWithValue((err as any).msg);
   }
 });
