@@ -298,22 +298,27 @@ const Timeline = ({
       zone: hoveredMesh.userData.zone,
     });
 
-    const hoveredColor = new Color(colors[hoveredMesh.userData.zone.id - 1]);
+    const hoveredMeshIndex = groupRef.current?.children.findIndex(
+      (mesh) => mesh.userData.zone.id === hoveredMesh.userData.zone.id
+    );
+
+    if (hoveredMeshIndex === undefined || hoveredMeshIndex === -1) {
+      return;
+    }
+
+    const hoveredColor = new Color(colors[hoveredMeshIndex]);
     hoveredColor.convertSRGBToLinear();
 
     hoveredMesh.material.color = hoveredColor;
   };
 
   const handleLeave = () => {
-    if (!groupRef.current) {
-      return;
-    }
-    groupRef.current.children.forEach((mesh) => {
+    groupRef.current?.children.forEach((mesh, index) => {
       if (mesh.userData.zone === undefined) {
         return;
       }
 
-      let color = new Color(colors[mesh.userData.zone.id - 1]);
+      let color = new Color(colors[index]);
       if (selectedZone !== null && selectedZone !== mesh.userData.zone.id) {
         color = new Color(NON_HIGHLIGHTED_COLOR);
       }

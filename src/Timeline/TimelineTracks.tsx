@@ -119,8 +119,10 @@ const TimelineTracks = ({
   }, [initialTrackXPos]);
 
   useEffect(() => {
-    meshRefs.current.forEach((mesh, index) => {
-      let color = new Color(colors[index]);
+    let index = 0;
+
+    meshRefs.current.forEach((mesh) => {
+      let color = new Color(colors[index++]);
       if (selectedZone !== null && selectedZone !== mesh.userData.zone?.id) {
         color = new Color(NON_HIGHLIGHTED_COLOR);
       }
@@ -132,25 +134,27 @@ const TimelineTracks = ({
 
   const render = useMemo(
     () =>
-      zoneIds.map(({ id: zoneId }, index) => {
-        let color = new Color(colors[index]);
-        color.convertSRGBToLinear();
+      zoneIds
+        .sort((first, second) => first.id - second.id)
+        .map(({ id: zoneId }, index) => {
+          let color = new Color(colors[index]);
+          color.convertSRGBToLinear();
 
-        return (
-          <mesh
-            key={`mesh-${index}-zone-${zoneId}`}
-            ref={(el) => {
-              if (!el) {
-                return;
-              }
+          return (
+            <mesh
+              key={`mesh-${index}-zone-${zoneId}`}
+              ref={(el) => {
+                if (!el) {
+                  return;
+                }
 
-              meshRefs.current[zoneId] = el;
-            }}
-            material={new MeshBasicMaterial({ color, toneMapped: false })}
-            position={[initialTrackXPos, 0, 0]}
-          />
-        );
-      }),
+                meshRefs.current[zoneId] = el;
+              }}
+              material={new MeshBasicMaterial({ color, toneMapped: false })}
+              position={[initialTrackXPos, 0, 0]}
+            />
+          );
+        }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [colors, zoneIds]
   );
