@@ -1,12 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { EntityMap } from '../utils/arrObjConversion';
 import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
-import { State as LocationState } from './locationSlice';
+import RootState from '../utils/RootState';
 
-export const selectAllLocationRecords = <
-  State extends { location: LocationState }
->(
-  state: State
+export const selectAllLocationRecords = (
+  state: RootState
 ): EntityMap<LocationHistoryRecord.AsObject[]> =>
   state.location.locationRecords;
 
@@ -21,13 +19,7 @@ export const selectLocationRecords = createSelector(
       {}
     )
 );
-export const selectLocationRecordsLoading = <
-  State extends { location: LocationState }
->(
-  state: State
-): boolean => state.location.loading;
-export const selectLocationRecordsLoaded = <
-  State extends { location: LocationState }
->(
-  state: State
-): boolean => state.location.loaded;
+export const selectLocationRecordsLoading = (state: RootState): boolean =>
+  state.location.loading;
+export const selectLocationRecordsLoaded = (state: RootState): boolean =>
+  state.location.loaded;
