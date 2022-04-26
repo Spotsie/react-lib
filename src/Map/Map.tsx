@@ -41,7 +41,7 @@ export type MapProps = {
   featureCollection: geojson.FeatureCollection;
   mapboxAccessToken: string;
   subjectLocationsData: geojson.FeatureCollection;
-  iconLayer: geojson.FeatureCollection;
+  iconLayer?: geojson.FeatureCollection;
   heatmap?: MapDisplayType;
   colors: string[];
   pins: PinProps[];
@@ -53,6 +53,7 @@ export function Map({
   pins,
   colors,
   featureCollection,
+  iconLayer,
   ...props
 }: MapProps) {
   const [viewport, setViewport] = React.useState({
@@ -100,7 +101,7 @@ export function Map({
         {/*<ZoneExtrusionLayer data={props.subjectLocationsData} />*/}
         {/*<LocationClusterLayer data={props.subjectLocationsData}/>*/}
 
-        <EvacuationPointLayer data={props.iconLayer} />
+        {iconLayer && <EvacuationPointLayer data={iconLayer} />}
         {pinMarkers}
         {children}
         <ScaleControl maxWidth={100} unit="metric" style={scaleControlStyle} />
