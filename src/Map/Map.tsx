@@ -44,7 +44,7 @@ export type MapProps = {
   iconLayer?: geojson.FeatureCollection;
   heatmap?: MapDisplayType;
   colors: string[];
-  pins: PinProps[];
+  pins?: PinProps[];
 };
 
 export function Map({
@@ -68,7 +68,7 @@ export function Map({
     }
   };
 
-  const pinMarkers = pins.map((coords, index) => (
+  const pinMarkers = pins?.map((coords, index) => (
     <Pin key={`pin-${index}`} {...coords} />
   ));
 
