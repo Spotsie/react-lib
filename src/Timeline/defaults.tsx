@@ -11,6 +11,9 @@ import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
 // ).default;
 const timelineData: Array<[number, LocationHistory.AsObject]> = [];
 
+// export const zoneIds: Zone.AsObject[] = (zoneData as any).default;
+export const zoneIds: Zone.AsObject[] = [];
+
 export const colors: string[] = [
   '#f6ad55',
   '#81e6d9',
@@ -45,9 +48,6 @@ export const colors: string[] = [
   '#ecc94b',
   '#d53f8c',
 ];
-
-// export const zoneIds: Zone.AsObject[] = (zoneData as any).default;
-export const zoneIds: Zone.AsObject[] = [];
 
 export const timeFrame = {
   start: new Date(2022, 2, 29),

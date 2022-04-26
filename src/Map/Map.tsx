@@ -1,6 +1,6 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, { ReactNode } from 'react';
-import ReactMapGL, { ScaleControl, MapEvent } from 'react-map-gl';
+import ReactMapGL, { ScaleControl } from 'react-map-gl/dist/es5';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import geojson from 'geojson';
 import { Feature } from 'geojson';
@@ -14,6 +14,7 @@ import { ZoneLayer } from './ZoneLayer';
 // @ts-ignore
 import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
 import Pin, { PinProps } from './Pin';
+import { MapLayerMouseEvent } from 'mapbox-gl';
 
 export const mapStyles = {
   light: 'mapbox://styles/mapbox/light-v10',
@@ -47,6 +48,12 @@ export type MapProps = {
   pins?: PinProps[];
 };
 
+const initialViewState = {
+  latitude: 45.28361487544451,
+  longitude: 14.53738009371364,
+  zoom: 16,
+};
+
 export function Map({
   children,
   style = 'light',
@@ -54,15 +61,10 @@ export function Map({
   colors,
   featureCollection,
   iconLayer,
+  mapboxAccessToken,
   ...props
 }: MapProps) {
-  const [viewport, setViewport] = React.useState({
-    latitude: 45.28361487544451,
-    longitude: 14.53738009371364,
-    zoom: 16,
-  });
-
-  const handleOnClick = (e: MapEvent) => {
+  const handleOnClick = (e: MapLayerMouseEvent) => {
     if (e.features !== undefined && e.features.length > 0) {
       props.onFeatureClick && props.onFeatureClick(e.features);
     }
@@ -75,22 +77,17 @@ export function Map({
   return (
     <>
       <ReactMapGL
-        {...viewport}
         mapStyle={mapStyles[style]}
-        mapboxApiAccessToken={props.mapboxAccessToken}
-        width="100%"
-        getCursor={() => 'crosshair'}
-        height="100%"
+        mapboxAccessToken={mapboxAccessToken}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+        cursor="crosshair"
         maxZoom={mapSettings.maxZoom}
         minZoom={mapSettings.minZoom}
         onClick={handleOnClick}
-        onViewportChange={(
-          viewport: React.SetStateAction<{
-            latitude: number;
-            longitude: number;
-            zoom: number;
-          }>
-        ) => setViewport(viewport)}
+        initialViewState={initialViewState}
       >
         <ZoneLayer data={featureCollection} colors={colors} />
         {props?.heatmap === 'color' && (
