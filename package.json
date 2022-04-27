@@ -84,7 +84,8 @@
     "mapbox-gl": "^2.6.1",
     "react-map-gl": "^7.0.11",
     "redux": "^4.2.0",
-    "three": "^0.139.2"
+    "three": "^0.139.2",
+    "worker-loader": "^3.0.8"
   },
   "browserslist": [
     "defaults, not ie 11"

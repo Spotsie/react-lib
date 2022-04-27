@@ -299,7 +299,7 @@ const Timeline = ({
     });
 
     const hoveredMeshIndex = groupRef.current?.children.findIndex(
-      (mesh) => mesh.userData.zone.id === hoveredMesh.userData.zone.id
+      (mesh) => mesh.userData.zone?.id === hoveredMesh.userData.zone?.id
     );
 
     if (hoveredMeshIndex === undefined || hoveredMeshIndex === -1) {

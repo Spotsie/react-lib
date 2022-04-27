@@ -11,8 +11,16 @@ import { HeatmapLayer } from './heatmapLayer';
 import { ZoneExtrusionLayer } from './ZoneExtrusionLayer';
 
 import { ZoneLayer } from './ZoneLayer';
+
+import mapboxgl from 'mapbox-gl';
+
+// The following is required to stop "npm build" from transpiling mapbox code.
+// notice the exclamation point in the import.
 // @ts-ignore
-import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
+// eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
+mapboxgl.workerClass =
+  require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+
 import Pin, { PinProps } from './Pin';
 import { MapLayerMouseEvent } from 'mapbox-gl';
 
