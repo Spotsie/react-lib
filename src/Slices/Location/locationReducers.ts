@@ -30,7 +30,7 @@ export const getLocationRecords = createAsyncThunk<
   const { ids, timeFrame, namespaceId } = params;
 
   if (ids.length === 0) {
-    return thunkAPI.rejectWithValue('Empty array.');
+    return [];
   }
 
   try {
