@@ -130,6 +130,8 @@ const TimelineTracks = ({
 
       (mesh as Mesh<BufferGeometry, MeshBasicMaterial>).material.color = color;
     });
+
+    invalidate();
   }, [selectedZone]);
 
   const render = useMemo(

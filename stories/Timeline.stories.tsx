@@ -14,6 +14,11 @@ const meta: Meta = {
   component: TimelineContainer,
   parameters: {
     controls: { expanded: true },
+    docs: {
+      source: {
+        type: 'code',
+      },
+    },
   },
 };
 
@@ -62,14 +67,23 @@ const Template: Story<TimelineProps> = ({
   };
 
   return (
-    <TimelineContainer
-      timeFrame={timeFrame}
-      timelineData={timelineData}
-      onClickZone={handleClickZone}
-      selectedZone={selectedZone}
-      onScroll={handleScroll}
-      {...props}
-    />
+    <>
+      <div>
+        {zoneIds
+          .sort((a, b) => a.id - b.id)
+          .map((zone) => (
+            <button onClick={() => handleClickZone(zone.id)}>{zone.id}</button>
+          ))}
+      </div>
+      <TimelineContainer
+        timeFrame={timeFrame}
+        timelineData={timelineData}
+        onClickZone={handleClickZone}
+        selectedZone={selectedZone}
+        onScroll={handleScroll}
+        {...props}
+      />
+    </>
   );
 };
 
