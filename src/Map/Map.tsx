@@ -1,6 +1,6 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, { ReactNode } from 'react';
-import ReactMapGL, { ScaleControl } from 'react-map-gl/dist/es5';
+import ReactMapGL, { ScaleControl, ViewState } from 'react-map-gl/dist/es5';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import geojson from 'geojson';
 import { Feature } from 'geojson';
@@ -54,12 +54,7 @@ export type MapProps = {
   heatmap?: MapDisplayType;
   colors: string[];
   pins?: PinProps[];
-};
-
-const initialViewState = {
-  latitude: 45.28361487544451,
-  longitude: 14.53738009371364,
-  zoom: 16,
+  initialViewState?: Partial<ViewState>;
 };
 
 export function Map({
@@ -70,6 +65,7 @@ export function Map({
   featureCollection,
   iconLayer,
   mapboxAccessToken,
+  initialViewState,
   ...props
 }: MapProps) {
   const handleOnClick = (e: MapLayerMouseEvent) => {
