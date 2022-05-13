@@ -25,12 +25,16 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
       selectedZone,
       onClickZone,
       zoneIds,
+      onScroll,
       ...props
     }: TimelineProps,
     ref
   ) => {
-    const timeFrameCenter =
-      (timeFrame.start.getTime() + timeFrame.end.getTime()) / 2 / 1000;
+    const timeFrameCenter = new Vector3(
+      (timeFrame.start.getTime() + timeFrame.end.getTime()) / 2 / 1000,
+      0,
+      3
+    );
 
     return zoneIds.length !== 0 &&
       Object.keys(timelineData).length !== 0 &&
@@ -45,6 +49,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
             overflow: 'hidden',
             height: '40rem',
             paddingBottom: '6rem',
+            userSelect: 'none',
           }}
         >
           <div
@@ -68,15 +73,16 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
             >
               <Canvas
                 camera={{
-                  position: new Vector3(timeFrameCenter, 0, 3),
+                  position: timeFrameCenter,
                   ///@ts-ignore
                   lookAt: (x) => {
-                    x = timeFrameCenter;
+                    x = timeFrameCenter.x;
                   },
                 }}
                 gl={{
                   preserveDrawingBuffer: true,
                   powerPreference: 'high-performance',
+                  antialias: false,
                 }}
                 orthographic
                 frameloop="demand"
@@ -97,6 +103,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
                   selectedZone={selectedZone}
                   onClickZone={onClickZone}
                   zoneIds={zoneIds}
+                  onScroll={onScroll}
                   {...props}
                 />
               </Canvas>

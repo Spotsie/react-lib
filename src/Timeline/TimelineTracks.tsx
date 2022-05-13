@@ -6,6 +6,11 @@ import { useEffect, useMemo, useRef } from 'react';
 import { BufferGeometry, Color, Mesh, MeshBasicMaterial, Vector2 } from 'three';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { NON_HIGHLIGHTED_COLOR } from './constants';
+import {
+  acceleratedRaycast,
+  computeBoundsTree,
+  disposeBoundsTree,
+} from 'three-mesh-bvh';
 
 interface Props {
   locationRecords: { [id: number]: LocationHistoryRecord.AsObject[] };
@@ -31,6 +36,36 @@ const TimelineTracks = ({
 }: Props) => {
   const meshRefs = useRef<Mesh[]>([]);
 
+  // use BVH computations instead of 3js raytracing
+  const useBVHs = () => {
+    const geometries: BufferGeometry[] = [];
+
+    meshRefs.current.forEach((mesh) => {
+      if (!mesh.geometry.attributes.position) {
+        return;
+      }
+
+      mesh.raycast = acceleratedRaycast;
+
+      const geometry: any = mesh.geometry;
+      geometries.push(mesh.geometry);
+
+      geometry.computeBoundsTree = computeBoundsTree;
+      geometry.disposeBoundsTree = disposeBoundsTree;
+      geometry.computeBoundsTree();
+
+      mesh.geometry = geometry;
+    });
+
+    return () => {
+      geometries.forEach((geometry) => {
+        if (geometry.boundsTree) {
+          geometry.disposeBoundsTree();
+        }
+      });
+    };
+  };
+
   const { gl, invalidate } = useThree(({ gl, invalidate }) => ({
     gl,
     invalidate,
@@ -44,7 +79,7 @@ const TimelineTracks = ({
   const canvasHeight = gl.domElement.parentElement?.clientHeight ?? 0;
 
   useEffect(() => {
-    if (!meshRefs.current || Object.keys(locationRecords).length === 0) {
+    if (Object.keys(locationRecords).length === 0) {
       return;
     }
 
@@ -107,6 +142,7 @@ const TimelineTracks = ({
       meshRefs.current[zone].updateMatrix();
     });
 
+    useBVHs();
     invalidate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasHeight, gl.domElement.clientHeight, locationRecords]);
