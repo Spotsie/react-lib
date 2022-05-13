@@ -14,6 +14,11 @@ const meta: Meta = {
   component: TimelineContainer,
   parameters: {
     controls: { expanded: true },
+    docs: {
+      source: {
+        type: 'code',
+      },
+    },
   },
 };
 
@@ -24,6 +29,7 @@ const Template: Story<TimelineProps> = ({
   timelineData: tData,
   onClickZone,
   selectedZone: z,
+  onScroll,
   ...props
 }) => {
   const [selectedZone, setSelectedZone] = useState<number | null>(null);
@@ -36,7 +42,6 @@ const Template: Story<TimelineProps> = ({
     if (!timeFrame) {
       return;
     }
-    console.log(timeFrame);
 
     setTimelineData(
       getTimelineData({
@@ -54,11 +59,8 @@ const Template: Story<TimelineProps> = ({
     }
   };
 
-  const handleScroll = (timeFrame: { start: Date; end: Date }) => {
-    setTimeFrame({
-      start: timeFrame.start,
-      end: timeFrame.end,
-    });
+  const handleScroll = (newTimeFrame: { start?: Date; end?: Date }) => {
+    setTimeFrame({ ...timeFrame, ...newTimeFrame });
   };
 
   return (

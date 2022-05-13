@@ -66,7 +66,7 @@ const TimeMarkers = ({
     let { start, end } = period;
     // Amount of times the markers will appear out of bounds to look
     // Better when scrolling
-    const offsetAmount = 2;
+    const offsetAmount = 1;
     start = start - interval * offsetAmount;
     end = end + interval * offsetAmount;
 

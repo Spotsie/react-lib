@@ -1,11 +1,10 @@
-import { ThreeEvent, useFrame, useThree } from '@react-three/fiber';
+import { ThreeEvent, useThree } from '@react-three/fiber';
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import {
   LineDashedMaterial,
   Color,
   Mesh,
   MeshBasicMaterial,
-  Group,
   BufferGeometry,
 } from 'three';
 import TimeMarkers from './TimeMarkers';
@@ -17,10 +16,10 @@ import ScrollControls from './utils/ScrollControls';
 import useCameraUpdate from './utils/useCameraUpdate';
 import { TimelineProps } from '..';
 import {
-  TIMELINE_LABELS_ID,
   TOOLTIP_ID,
   TIMELINE_ID,
   NON_HIGHLIGHTED_COLOR,
+  TIMELINE_LABELS_ID,
 } from './constants';
 import DragControls from './utils/DragControls';
 
@@ -120,16 +119,16 @@ const Timeline = ({
   const camera = useCameraUpdate();
 
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
-  const groupRef = useRef<Group>();
+  const meshRef = useRef<Mesh>();
 
-  useFrame(() => {
+  useEffect(() => {
     const labels = document.getElementById(TIMELINE_LABELS_ID);
     if (!labels) {
       return;
     }
 
     labels.style.top = `${camera.position.y + trackTopOffset}px`;
-  });
+  }, [camera.position.y, trackTopOffset]);
 
   useEffect(() => {
     const cameraPosition =
@@ -298,7 +297,7 @@ const Timeline = ({
       zone: hoveredMesh.userData.zone,
     });
 
-    const hoveredMeshIndex = groupRef.current?.children.findIndex(
+    const hoveredMeshIndex = meshRef.current?.children.findIndex(
       (mesh) => mesh.userData.zone?.id === hoveredMesh.userData.zone?.id
     );
 
@@ -313,7 +312,7 @@ const Timeline = ({
   };
 
   const handleLeave = () => {
-    groupRef.current?.children.forEach((mesh, index) => {
+    meshRef.current?.children.forEach((mesh, index) => {
       if (mesh.userData.zone === undefined) {
         return;
       }
@@ -358,7 +357,6 @@ const Timeline = ({
     <div style="color: black !important">${formatDuration(
       tooltip.duration
     )}</div>`;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tooltip]);
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
@@ -378,16 +376,14 @@ const Timeline = ({
 
     const round = gl.domElement.clientWidth * camera.scale.x;
 
-    const timeFrameStart = new Date(timeFrame.start).getTime() / 1000;
-    const timeFrameEnd = new Date(timeFrame.end).getTime() / 1000;
+    const timeFrameStart = timeFrame.start.getTime() / 1000;
+    const timeFrameEnd = timeFrame.end.getTime() / 1000;
 
     if (cameraStart <= Math.floor(timeFrameStart / round) * round) {
       onScroll({
         start: new Date(cameraStart * 1000),
       });
-      return;
-    }
-    if (cameraEnd >= Math.ceil(timeFrameEnd / round) * round) {
+    } else if (cameraEnd >= Math.ceil(timeFrameEnd / round) * round) {
       onScroll({
         end: new Date(cameraEnd * 1000),
       });
@@ -400,14 +396,14 @@ const Timeline = ({
         <group>{markers}</group>
 
         <group>{dateMarkers}</group>
-        <group
+        <mesh
           onClick={handleClick}
           onPointerMove={handleEnter}
           onPointerLeave={handleLeave}
-          ref={groupRef}
+          ref={meshRef}
         >
           {tracks}
-        </group>
+        </mesh>
       </group>
 
       <DragControls dragSensitivity={1} />
