@@ -1,16 +1,17 @@
 import { useThree } from '@react-three/fiber';
 import { Zone } from 'proto-all-js/deployment/organization_pb';
 import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
-import React from 'react';
+import React, { useState } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
-import { BufferGeometry, Color, Mesh, MeshBasicMaterial, Vector2 } from 'three';
+import { BufferGeometry, Color, Mesh, Vector2 } from 'three';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { NON_HIGHLIGHTED_COLOR } from './constants';
+import { HOVER_ANIMATION_DELAY, NON_HIGHLIGHTED_COLOR } from './constants';
 import {
   acceleratedRaycast,
   computeBoundsTree,
   disposeBoundsTree,
 } from 'three-mesh-bvh';
+import { motion } from 'framer-motion-3d';
 
 interface Props {
   locationRecords: { [id: number]: LocationHistoryRecord.AsObject[] };
@@ -23,6 +24,8 @@ interface Props {
   zoneIds: Zone.AsObject[];
 
   selectedZone: number | null;
+
+  onClickZone(zoneId: number | null): void;
 }
 
 const TimelineTracks = ({
@@ -33,7 +36,10 @@ const TimelineTracks = ({
   colors,
   zoneIds,
   selectedZone,
+  onClickZone,
 }: Props) => {
+  const [hoveredZone, setHoveredZone] = useState<number | null>(null);
+
   const meshRefs = useRef<Mesh[]>([]);
 
   // use BVH computations instead of 3js raytracing
@@ -114,9 +120,10 @@ const TimelineTracks = ({
         );
 
         geo.userData = {
-          duration: trackRight - trackLeft,
-          start: trackLeft,
-          end: trackRight,
+          left: trackLeft,
+          right: trackRight,
+          top: trackTop,
+          bottom: trackBottom,
         };
 
         if (!geosByZoneId[record.zone]) {
@@ -144,7 +151,6 @@ const TimelineTracks = ({
 
     useBVHs();
     invalidate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasHeight, gl.domElement.clientHeight, locationRecords]);
 
   useEffect(() => {
@@ -153,22 +159,6 @@ const TimelineTracks = ({
       mesh.updateMatrix();
     });
   }, [initialTrackXPos]);
-
-  useEffect(() => {
-    let index = 0;
-
-    meshRefs.current.forEach((mesh) => {
-      let color = new Color(colors[index++]);
-      if (selectedZone !== null && selectedZone !== mesh.userData.zone?.id) {
-        color = new Color(NON_HIGHLIGHTED_COLOR);
-      }
-      color.convertSRGBToLinear();
-
-      (mesh as Mesh<BufferGeometry, MeshBasicMaterial>).material.color = color;
-    });
-
-    invalidate();
-  }, [selectedZone]);
 
   const render = useMemo(
     () =>
@@ -179,22 +169,50 @@ const TimelineTracks = ({
           color.convertSRGBToLinear();
 
           return (
-            <mesh
+            <motion.mesh
               key={`mesh-${index}-zone-${zoneId}`}
               ref={(el) => {
                 if (!el) {
                   return;
                 }
 
-                meshRefs.current[zoneId] = el;
+                meshRefs.current[zoneId] = el as any;
               }}
-              material={new MeshBasicMaterial({ color, toneMapped: false })}
               position={[initialTrackXPos, 0, 0]}
-            />
+              onClick={() => onClickZone(zoneId)}
+              onPointerEnter={() => setHoveredZone(zoneId)}
+              onPointerLeave={() => setHoveredZone(null)}
+              animate={
+                selectedZone !== null
+                  ? selectedZone !== zoneId
+                    ? 'notSelected'
+                    : 'selected'
+                  : hoveredZone !== null
+                  ? hoveredZone !== zoneId
+                    ? 'notSelected'
+                    : 'selected'
+                  : 'selected'
+              }
+            >
+              <motion.meshBasicMaterial
+                onUpdate={invalidate}
+                toneMapped={false}
+                transition={{
+                  delay: HOVER_ANIMATION_DELAY / 1000,
+                }}
+                variants={{
+                  selected: {
+                    color: `#${color.getHexString()}`,
+                  },
+                  notSelected: {
+                    color: NON_HIGHLIGHTED_COLOR,
+                  },
+                }}
+              />
+            </motion.mesh>
           );
         }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [colors, zoneIds]
+    [colors, zoneIds, hoveredZone, selectedZone]
   );
 
   return <>{render}</>;

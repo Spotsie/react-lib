@@ -18,8 +18,8 @@ import { TimelineProps } from '..';
 import {
   TOOLTIP_ID,
   TIMELINE_ID,
-  NON_HIGHLIGHTED_COLOR,
   TIMELINE_LABELS_ID,
+  HOVER_ANIMATION_DELAY,
 } from './constants';
 import DragControls from './utils/DragControls';
 
@@ -120,6 +120,8 @@ const Timeline = ({
 
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const meshRef = useRef<Mesh>();
+
+  const timeout = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     const labels = document.getElementById(TIMELINE_LABELS_ID);
@@ -241,17 +243,21 @@ const Timeline = ({
         colors={colors}
         zoneIds={zoneIds}
         selectedZone={selectedZone}
+        onClickZone={onClickZone}
       />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [timelineData, timeFrame, selectedZone]
   );
 
-  const handleEnter = (e: ThreeEvent<PointerEvent>) => {
+  const handleEnter = (e: ThreeEvent<MouseEvent>) => {
+    clearTimeout(timeout.current);
+
     const hoveredMesh = e.intersections[0].object as Mesh<
       BufferGeometry,
       MeshBasicMaterial
     >;
+    // If tooltip is in the same zone, update only tooltip position
     if (tooltip && hoveredMesh.userData.zone === tooltip.zone) {
       setTooltip({
         ...tooltip,
@@ -263,68 +269,42 @@ const Timeline = ({
 
       return;
     }
-
-    const hoveredGroup = e.intersections[0].eventObject;
-    hoveredGroup.children.forEach((mesh) => {
-      const color = new Color(NON_HIGHLIGHTED_COLOR);
-      color.convertSRGBToLinear();
-
-      (mesh as Mesh<BufferGeometry, MeshBasicMaterial>).material.color = color;
-    });
-
-    const foundGeometry = hoveredMesh.geometry.userData.mergedUserData.find(
-      ({ start, end }: any) => {
-        const x = e.point.x - hoveredMesh.position.x;
-
-        if (x >= start && x <= end) {
-          return true;
-        }
-
-        return false;
-      }
-    );
-
-    if (!foundGeometry) {
+    // If there is a selected zone, don't do anything else
+    if (
+      selectedZone !== null &&
+      selectedZone !== hoveredMesh.userData.zone.id
+    ) {
       return;
     }
 
-    setTooltip({
-      duration: foundGeometry.duration,
-      point: {
-        x: e.nativeEvent.clientX,
-        y: e.nativeEvent.clientY,
-      },
-      zone: hoveredMesh.userData.zone,
-    });
+    timeout.current = setTimeout(() => {
+      const x = e.point.x - hoveredMesh.position.x;
+      const y = e.point.y;
 
-    const hoveredMeshIndex = meshRef.current?.children.findIndex(
-      (mesh) => mesh.userData.zone?.id === hoveredMesh.userData.zone?.id
-    );
+      const foundGeometry = hoveredMesh.geometry.userData.mergedUserData.find(
+        ({ left, right, top, bottom }: any) =>
+          x >= left && x <= right && y >= bottom && y <= top
+      );
 
-    if (hoveredMeshIndex === undefined || hoveredMeshIndex === -1) {
-      return;
-    }
-
-    const hoveredColor = new Color(colors[hoveredMeshIndex]);
-    hoveredColor.convertSRGBToLinear();
-
-    hoveredMesh.material.color = hoveredColor;
-  };
-
-  const handleLeave = () => {
-    meshRef.current?.children.forEach((mesh, index) => {
-      if (mesh.userData.zone === undefined) {
+      if (!foundGeometry) {
         return;
       }
 
-      let color = new Color(colors[index]);
-      if (selectedZone !== null && selectedZone !== mesh.userData.zone.id) {
-        color = new Color(NON_HIGHLIGHTED_COLOR);
-      }
-      color.convertSRGBToLinear();
+      const duration = foundGeometry.right - foundGeometry.left;
 
-      ((mesh as Mesh).material as MeshBasicMaterial).color = color;
-    });
+      setTooltip({
+        duration,
+        point: {
+          x: e.nativeEvent.clientX,
+          y: e.nativeEvent.clientY,
+        },
+        zone: hoveredMesh.userData.zone,
+      });
+    }, HOVER_ANIMATION_DELAY);
+  };
+
+  const handleLeave = () => {
+    clearTimeout(timeout.current);
 
     setTooltip(null);
   };
@@ -359,15 +339,6 @@ const Timeline = ({
     )}</div>`;
   }, [tooltip]);
 
-  const handleClick = (e: ThreeEvent<MouseEvent>) => {
-    const hoveredMesh = e.intersections[0].object as Mesh<
-      BufferGeometry,
-      MeshBasicMaterial
-    >;
-
-    onClickZone(hoveredMesh.userData.zone.id);
-  };
-
   useEffect(() => {
     const cameraStart =
       camera.position.x - (gl.domElement.clientWidth * camera.scale.x) / 2;
@@ -397,7 +368,6 @@ const Timeline = ({
 
         <group>{dateMarkers}</group>
         <mesh
-          onClick={handleClick}
           onPointerMove={handleEnter}
           onPointerLeave={handleLeave}
           ref={meshRef}

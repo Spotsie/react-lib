@@ -4,5 +4,14 @@ module.exports = {
   // https://storybook.js.org/docs/react/configure/typescript#mainjs-configuration
   typescript: {
     check: true, // type-check stories during Storybook build
-  }
+  },
+  webpackFinal: async (config) => {
+    config.module.rules.push({
+      type: 'javascript/auto',
+      test: /\.mjs$/,
+      include: /node_modules/,
+    });
+
+    return config;
+  },
 };

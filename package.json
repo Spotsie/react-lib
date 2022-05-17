@@ -79,12 +79,15 @@
     "@types/google-protobuf": "^3.15.5",
     "@types/three": "^0.139.0",
     "date-fns": "^2.28.0",
+    "framer-motion": "^6.3.3",
+    "framer-motion-3d": "^6.3.3",
     "geojson": "^0.5.0",
     "google-protobuf": "^3.20.1-rc.1",
     "mapbox-gl": "^2.6.1",
     "react-map-gl": "^7.0.11",
     "redux": "^4.2.0",
     "three": "^0.139.2",
+    "three-mesh-bvh": "^0.5.10",
     "worker-loader": "^3.0.8"
   },
   "browserslist": [
