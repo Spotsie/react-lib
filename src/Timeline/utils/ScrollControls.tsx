@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import React from 'react';
+import { Vector3 } from 'three';
 
 interface Props {
   zoomSensitivity: number;
@@ -51,6 +52,11 @@ const ScrollControls = ({ zoomSensitivity, maxScroll }: Props) => {
           camera.translateY(-amount);
         }
       } else {
+        // Don't calculate new scale before the last update is done
+        if (camera.matrixWorldNeedsUpdate) {
+          return;
+        }
+
         const newScale = Number(
           (
             camera.scale.x +
@@ -58,7 +64,28 @@ const ScrollControls = ({ zoomSensitivity, maxScroll }: Props) => {
           ).toFixed(2)
         );
 
+        // Get the current local & world mouse coords
+        // 80 is padding
+        const currDistanceMouseFromCenter =
+          e.clientX - gl.domElement.clientWidth / 2 - 80;
+        const currObjectPosition = camera.localToWorld(
+          new Vector3(currDistanceMouseFromCenter)
+        );
+
         camera.scale.setX(Math.min(Math.max(MIN_SCALE, newScale), MAX_SCALE));
+
+        // Update the world matrix before calculating new positions
+        camera.updateMatrixWorld();
+
+        // Get new world mouse coords and offset with the previous mouse coords
+        const newObjectPos = camera.localToWorld(
+          new Vector3(currDistanceMouseFromCenter)
+        );
+        const newDistanceFromMouseToCenter = newObjectPos.x - camera.position.x;
+        const newCameraPosition =
+          currObjectPosition.x - newDistanceFromMouseToCenter;
+
+        camera.position.setX(newCameraPosition);
       }
 
       camera.updateProjectionMatrix();
@@ -75,22 +102,22 @@ const ScrollControls = ({ zoomSensitivity, maxScroll }: Props) => {
       e.preventDefault();
 
       if (e.touches.length === 2) {
-        const dist = Math.hypot(
+        const distance = Math.hypot(
           e.touches[0].pageX - e.touches[1].pageX,
           e.touches[0].pageY - e.touches[1].pageY
         );
         if (!previousDist.current) {
-          previousDist.current = dist;
+          previousDist.current = distance;
         }
         const newScale = Number(
           (
             camera.scale.x +
-            0.01 * (camera.scale.x * (previousDist.current - dist))
+            0.01 * (camera.scale.x * (previousDist.current - distance))
           ).toFixed(2)
         );
 
         camera.scale.setX(Math.min(Math.max(MIN_SCALE, newScale), MAX_SCALE));
-        previousDist.current = dist;
+        previousDist.current = distance;
 
         return;
       }
