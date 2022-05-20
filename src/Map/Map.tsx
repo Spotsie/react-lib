@@ -92,6 +92,7 @@ export function Map({
         minZoom={mapSettings.minZoom}
         onClick={handleOnClick}
         initialViewState={initialViewState}
+        preserveDrawingBuffer={true}
       >
         <ZoneLayer data={featureCollection} colors={colors} />
         {props?.heatmap === 'color' && (
