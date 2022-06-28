@@ -47,10 +47,8 @@ export const getLocationRecords = createAsyncThunk<
             const { fromTime, toTime } = req.toObject();
 
             return (
-              fromTime &&
-              toTime &&
-              fromTime.seconds === range.start.getTime() / 1000 &&
-              toTime.seconds === range.end.getTime() / 1000
+              fromTime?.seconds === Math.floor(range.start.getTime() / 1000) &&
+              toTime?.seconds === Math.floor(range.end.getTime() / 1000)
             );
           });
 
