@@ -195,7 +195,7 @@ const TimelineTracks = ({
               }
             >
               <motion.meshBasicMaterial
-                onUpdate={invalidate}
+                onUpdate={() => invalidate()}
                 toneMapped={false}
                 transition={{
                   delay: HOVER_ANIMATION_DELAY / 1000,

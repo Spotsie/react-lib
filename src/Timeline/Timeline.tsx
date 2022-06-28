@@ -119,7 +119,7 @@ const Timeline = ({
   const camera = useCameraUpdate();
 
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
-  const meshRef = useRef<Mesh>();
+  const meshRef = useRef<Mesh>(null);
 
   const timeout = useRef<NodeJS.Timeout>();
 

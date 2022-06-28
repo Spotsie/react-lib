@@ -40,8 +40,8 @@ const TimeMarkers = ({
   timeMarkerLabelStyle,
   isDate,
 }: Props) => {
-  const meshRef = useRef<Mesh>();
-  const lineRef = useRef<LineSegments>();
+  const meshRef = useRef<Mesh>(null);
+  const lineRef = useRef<LineSegments>(null);
 
   const currDateMarkerRef = useRef<HTMLDivElement>();
   const flexRef = useRef<HTMLDivElement>();
