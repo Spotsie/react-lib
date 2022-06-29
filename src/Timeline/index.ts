@@ -28,6 +28,7 @@ export interface TimelineProps {
   onClickZone(zoneId: number): void;
 
   onScroll(timeFrame: { start?: Date; end?: Date }): void;
+  style?: CSSProperties;
 }
 
 export * from './TimelineContainer';

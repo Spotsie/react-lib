@@ -26,6 +26,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
       onClickZone,
       zoneIds,
       onScroll,
+      style,
       ...props
     }: TimelineProps,
     ref
@@ -50,6 +51,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
             height: '40rem',
             paddingBottom: '6rem',
             userSelect: 'none',
+            ...style,
           }}
         >
           <div
