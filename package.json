@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.25",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -22,7 +22,7 @@
     "build-storybook": "build-storybook"
   },
   "peerDependencies": {
-    "proto-all-js": "git@github.com:spotsie/proto-all-js.git#v0.2.1",
+    "proto-all-js": "git@github.com:spotsie/proto-all-js.git#v0.4.0",
     "react": "^18.1.0",
     "react-dom": ">=18"
   },
@@ -64,7 +64,7 @@
     "@types/react-dom": "^18.0.5",
     "babel-loader": "^8.2.5",
     "husky": "^8.0.1",
-    "proto-all-js": "git@github.com:spotsie/proto-all-js.git#v0.2.1",
+    "proto-all-js": "git@github.com:spotsie/proto-all-js.git#v0.4.0",
     "react-is": "^18.2.0",
     "size-limit": "^7.0.8",
     "tsdx": "^0.14.1",
