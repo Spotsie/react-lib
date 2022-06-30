@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Marker } from 'react-map-gl/dist/es5';
+import { Marker } from 'react-map-gl';
 import { LocationMarkerIcon } from './LocationMarker';
 
 const pinStyle = {

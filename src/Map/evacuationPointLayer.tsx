@@ -1,4 +1,4 @@
-import { Layer, LayerProps, Source } from 'react-map-gl/dist/es5';
+import { Layer, LayerProps, Source } from 'react-map-gl';
 import React, { useState } from 'react';
 import geojson from 'geojson';
 

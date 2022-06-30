@@ -1,5 +1,5 @@
 import geojson from 'geojson';
-import { Layer, LayerProps, Source } from 'react-map-gl/dist/es5';
+import { Layer, LayerProps, Source } from 'react-map-gl';
 import React from 'react';
 
 const MAX_ZOOM_LEVEL = 21;

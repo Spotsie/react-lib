@@ -1,4 +1,4 @@
-import { Layer, LayerProps } from 'react-map-gl/dist/es5';
+import { Layer, LayerProps } from 'react-map-gl';
 import React from 'react';
 
 export const zoneExtrusionLayer: LayerProps = {

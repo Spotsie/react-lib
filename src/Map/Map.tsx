@@ -1,6 +1,6 @@
 /* eslint import/no-webpack-loader-syntax: off */
 import React, { ReactNode } from 'react';
-import ReactMapGL, { ScaleControl, ViewState } from 'react-map-gl/dist/es5';
+import ReactMapGL, { ViewState, ScaleControl } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import geojson from 'geojson';
 import { Feature } from 'geojson';
@@ -23,6 +23,7 @@ mapboxgl.workerClass =
 
 import Pin, { PinProps } from './Pin';
 import { MapLayerMouseEvent } from 'mapbox-gl';
+import { RasterLayer } from './rasterLayer';
 
 export const mapStyles = {
   light: 'mapbox://styles/mapbox/light-v10',
@@ -55,6 +56,10 @@ export type MapProps = {
   colors: string[];
   pins?: PinProps[];
   initialViewState?: Partial<ViewState>;
+  overlay?: {
+    coordinates: number[][];
+    src: string;
+  };
 };
 
 export function Map({
@@ -66,6 +71,7 @@ export function Map({
   iconLayer,
   mapboxAccessToken,
   initialViewState,
+  overlay,
   ...props
 }: MapProps) {
   const handleOnClick = (e: MapLayerMouseEvent) => {
@@ -100,8 +106,9 @@ export function Map({
         )}
         {props?.heatmap === '3d' && <ZoneExtrusionLayer />}
 
-        {/*<ZoneExtrusionLayer data={props.subjectLocationsData} />*/}
-        {/*<LocationClusterLayer data={props.subjectLocationsData}/>*/}
+        {overlay && (
+          <RasterLayer data={overlay.coordinates} src={overlay.src} />
+        )}
 
         {iconLayer && <EvacuationPointLayer data={iconLayer} />}
         {pinMarkers}

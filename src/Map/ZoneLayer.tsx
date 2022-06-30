@@ -1,6 +1,6 @@
 import geojson from 'geojson';
 import React from 'react';
-import { Layer, LayerProps, Source } from 'react-map-gl/dist/es5';
+import { Layer, LayerProps, Source } from 'react-map-gl';
 
 const getColorStops = (colors: string[]) => [
   [1, colors[0]],

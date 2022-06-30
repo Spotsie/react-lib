@@ -1,4 +1,4 @@
-import { LayerProps } from 'react-map-gl/dist/es5';
+import { LayerProps } from 'react-map-gl';
 
 export const clusterLayer: LayerProps = {
   id: 'clusters',
