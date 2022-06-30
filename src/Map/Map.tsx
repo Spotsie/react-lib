@@ -60,6 +60,8 @@ export type MapProps = {
     coordinates: number[][];
     src: string;
   };
+  maxZoom?: number;
+  minZoom?: number;
 };
 
 export function Map({
@@ -72,6 +74,8 @@ export function Map({
   mapboxAccessToken,
   initialViewState,
   overlay,
+  maxZoom,
+  minZoom,
   ...props
 }: MapProps) {
   const handleOnClick = (e: MapLayerMouseEvent) => {
@@ -94,8 +98,8 @@ export function Map({
           height: '100%',
         }}
         cursor="crosshair"
-        maxZoom={mapSettings.maxZoom}
-        minZoom={mapSettings.minZoom}
+        maxZoom={maxZoom ?? mapSettings.maxZoom}
+        minZoom={minZoom ?? mapSettings.minZoom}
         onClick={handleOnClick}
         initialViewState={initialViewState}
         preserveDrawingBuffer={true}
