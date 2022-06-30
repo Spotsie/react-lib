@@ -7,13 +7,15 @@ const emptyFeatureCollection: Feature[] = [];
 export function newFeatureCollectionFromZones(
   zones: pb.Zone.AsObject[]
 ): MapFeature[] {
-  return zones
-    .map((zone) => {
-      const fc: MapFeature[] =
-        (zone.config?.geoJson && JSON.parse(zone.config.geoJson)) ||
-        emptyFeatureCollection;
+  return zones.map !== undefined
+    ? zones
+        .map((zone) => {
+          const fc: MapFeature[] =
+            (zone.config?.geoJson && JSON.parse(zone.config.geoJson)) ||
+            emptyFeatureCollection;
 
-      return setZoneFeatureProperties(zone.id, fc);
-    })
-    .flat(1);
+          return setZoneFeatureProperties(zone.id, fc);
+        })
+        .flat(1)
+    : [];
 }
