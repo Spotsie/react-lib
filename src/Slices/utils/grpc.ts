@@ -2,6 +2,10 @@ import { grpc } from '@improbable-eng/grpc-web';
 import { ProtobufMessage } from '@improbable-eng/grpc-web/dist/typings/message';
 import { UnaryMethodDefinition } from '@improbable-eng/grpc-web/dist/typings/service';
 
+if (!('process' in window)) {
+  // @ts-ignore
+  window.process = {};
+}
 const DEFAULT_API_URL = 'https://staging.spotsie.cloud';
 const API_URL = process
   ? process.env.REACT_APP_SPOTSIE_CLOUD_URL ?? DEFAULT_API_URL
