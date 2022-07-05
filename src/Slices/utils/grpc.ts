@@ -2,7 +2,10 @@ import { grpc } from '@improbable-eng/grpc-web';
 import { ProtobufMessage } from '@improbable-eng/grpc-web/dist/typings/message';
 import { UnaryMethodDefinition } from '@improbable-eng/grpc-web/dist/typings/service';
 
-const API_URL = 'https://staging.spotsie.cloud';
+const DEFAULT_API_URL = 'https://staging.spotsie.cloud';
+const API_URL = process
+  ? process.env.REACT_APP_SPOTSIE_CLOUD_URL ?? DEFAULT_API_URL
+  : DEFAULT_API_URL;
 
 type UnaryMethodResponseType<TMethod> = TMethod extends UnaryMethodDefinition<
   any,
