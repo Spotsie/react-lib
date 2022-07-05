@@ -78,7 +78,8 @@ const TimelineTracks = ({
   }));
 
   const initialTrackXPos =
-    Object.values(locationRecords)[0][0]?.fromTime?.seconds ?? 0;
+    Object.values(locationRecords).find((arr) => arr.length !== 0)?.[0]
+      ?.fromTime?.seconds ?? 0;
 
   // The client height from the canvas is acting really weird
   // So I'm getting it from its parent
