@@ -7,14 +7,12 @@ import {
 } from 'proto-all-js/location/service_pb';
 import { LocationApi } from 'proto-all-js/location/service_pb_service';
 import { getQueryRange, Interval } from '../utils/cache';
-import { grpcUnaryRequest } from '../utils/grpc';
+import { API_NAMESPACE_ID, grpcUnaryRequest } from '../utils/grpc';
 import RootState from '../utils/RootState';
 
 interface GetLocationRecordsRequest {
   ids: number[];
   timeFrame: Interval;
-
-  namespaceId: number;
 }
 
 interface GetLocationRecordsResponse {
@@ -27,7 +25,7 @@ export const getLocationRecords = createAsyncThunk<
   GetLocationRecordsRequest,
   { rejectValue: string; state: RootState }
 >('location/getRecords', async (params, thunkAPI) => {
-  const { ids, timeFrame, namespaceId } = params;
+  const { ids, timeFrame } = params;
 
   if (ids.length === 0) {
     return [];
@@ -54,7 +52,7 @@ export const getLocationRecords = createAsyncThunk<
 
           const subject = new Subject();
           subject.setId(id);
-          subject.setNamespace(namespaceId);
+          subject.setNamespace(API_NAMESPACE_ID);
 
           if (existingRequest) {
             existingRequest.addSubjects(subject);

@@ -9,6 +9,7 @@ import { newFeatureCollectionFromZones } from '../src/Map/geojson';
 import { AllGeoJSON, centroid } from '@turf/turf';
 import evacuationPoints from '../src/Map/evacuationPointsData.json';
 import { PinProps } from '../src/Map/Pin';
+import React from 'react';
 
 const meta: Meta = {
   title: 'Map',

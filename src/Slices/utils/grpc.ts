@@ -3,7 +3,7 @@ import { ProtobufMessage } from '@improbable-eng/grpc-web/dist/typings/message';
 import { UnaryMethodDefinition } from '@improbable-eng/grpc-web/dist/typings/service';
 
 const DEFAULT_API_URL = 'https://staging.spotsie.cloud';
-let API_URL = DEFAULT_API_URL;
+export let API_URL = DEFAULT_API_URL;
 
 try {
   API_URL =
@@ -21,7 +21,7 @@ try {
 }
 
 const DEFAULT_ORGANIZATION_ID = 1;
-let API_ORGANIZATION_ID = DEFAULT_ORGANIZATION_ID;
+export let API_ORGANIZATION_ID = DEFAULT_ORGANIZATION_ID;
 
 try {
   API_ORGANIZATION_ID = !isNaN(Number(process.env.REACT_APP_ORGANIZATION_ID))
@@ -45,7 +45,7 @@ try {
 }
 
 const DEFAULT_NAMESPACE_ID = 1;
-let API_NAMESPACE_ID = DEFAULT_NAMESPACE_ID;
+export let API_NAMESPACE_ID = DEFAULT_NAMESPACE_ID;
 
 try {
   API_NAMESPACE_ID = !isNaN(Number(process.env.REACT_APP_NAMESPACE_ID))
