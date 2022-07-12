@@ -1,5 +1,5 @@
 {
-  "version": "0.4.1",
+  "version": "0.4.2",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -73,8 +73,7 @@
     "tsdx": "^0.14.1",
     "tslib": "^2.4.0",
     "typescript": "^4.7.4",
-    "webpack": "^5.73.0",
-    "worker-loader": "^3.0.8"
+    "webpack": "^5.73.0"
   },
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.15.0",
@@ -93,6 +92,7 @@
     "react-map-gl": "^7.0.16",
     "redux": "^4.2.0",
     "three": "^0.141.0",
-    "three-mesh-bvh": "^0.5.14"
+    "three-mesh-bvh": "^0.5.14",
+    "worker-loader": "^3.0.8"
   }
 }
