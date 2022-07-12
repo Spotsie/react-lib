@@ -1,5 +1,5 @@
 {
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -12,17 +12,16 @@
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "tsdx build --format esm",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "prepare": "tsdx build --format esm",
     "size": "size-limit",
     "analyze": "size-limit --why",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "peerDependencies": {
-    "proto-all-js": "git@github.com:spotsie/proto-all-js.git#v0.4.0",
     "react": "^18.1.0",
     "react-dom": ">=18"
   },
@@ -53,6 +52,8 @@
   "devDependencies": {
     "@babel/core": "^7.18.6",
     "@size-limit/preset-small-lib": "^7.0.8",
+    "@size-limit/webpack": "^7.0.8",
+    "@size-limit/webpack-why": "^7.0.8",
     "@storybook/addon-essentials": "^6.5.9",
     "@storybook/addon-info": "^5.3.21",
     "@storybook/addon-links": "^6.5.9",
@@ -63,18 +64,20 @@
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "babel-loader": "^8.2.5",
+    "css-loader": "^6.7.1",
     "husky": "^8.0.1",
     "proto-all-js": "git@github.com:spotsie/proto-all-js.git#v0.4.0",
     "react-is": "^18.2.0",
+    "rollup-plugin-web-worker-loader": "^1.6.1",
     "size-limit": "^7.0.8",
     "tsdx": "^0.14.1",
     "tslib": "^2.4.0",
     "typescript": "^4.7.4",
-    "webpack": "^5.73.0"
+    "webpack": "^5.73.0",
+    "worker-loader": "^3.0.8"
   },
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.15.0",
-    "@nebula.gl/edit-modes": "^1.0.3",
     "@react-three/drei": "^9.14.3",
     "@react-three/fiber": "^8.0.27",
     "@reduxjs/toolkit": "^1.8.2",
@@ -90,10 +93,6 @@
     "react-map-gl": "^7.0.16",
     "redux": "^4.2.0",
     "three": "^0.141.0",
-    "three-mesh-bvh": "^0.5.14",
-    "worker-loader": "^3.0.8"
-  },
-  "browserslist": [
-    "defaults, not ie 11"
-  ]
+    "three-mesh-bvh": "^0.5.14"
+  }
 }

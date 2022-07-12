@@ -1,4 +1,23 @@
-import { Feature, FeatureWithProps } from '@nebula.gl/edit-modes';
+type Geometry = {
+  type:
+    | 'Point'
+    | 'LineString'
+    | 'Polygon'
+    | 'MultiPoint'
+    | 'MultiLineString'
+    | 'MultiPolygon';
+  coordinates: number[];
+};
+
+export type Feature = {
+  type: 'Feature';
+  geometry: Geometry;
+  properties?: {
+    [key: string]: any;
+  };
+  id?: string | number;
+  bbox?: [number, number, number, number];
+};
 
 enum FeatureType {
   unknown = 'unknown',
@@ -16,8 +35,17 @@ type GatewayFeatureProperties = {
   type: FeatureType.gateway;
   zoneID: number;
 };
-export type ZoneFeature = FeatureWithProps<any, ZoneFeatureProperties>;
-export type GatewayFeature = FeatureWithProps<any, GatewayFeatureProperties>;
+export type ZoneFeature = {
+  type: 'Feature';
+  geometry: Geometry;
+  properties: ZoneFeatureProperties;
+};
+
+export type GatewayFeature = {
+  type: 'Feature';
+  geometry: Geometry;
+  properties: GatewayFeatureProperties;
+};
 
 export type MapFeature = ZoneFeature | GatewayFeature;
 

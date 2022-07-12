@@ -1,6 +1,5 @@
 import * as pb from 'proto-all-js/deployment/organization_pb';
-import { MapFeature, setZoneFeatureProperties } from './metadata';
-import { Feature } from '@nebula.gl/edit-modes';
+import { Feature, MapFeature, setZoneFeatureProperties } from './metadata';
 
 const emptyFeatureCollection: Feature[] = [];
 
