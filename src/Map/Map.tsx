@@ -59,6 +59,7 @@ export type MapProps = {
   overlay?: {
     coordinates: number[][];
     src: string;
+    opacity?: number;
   };
   maxZoom?: number;
   minZoom?: number;
@@ -104,15 +105,18 @@ export function Map({
         initialViewState={initialViewState}
         preserveDrawingBuffer={true}
       >
+        {overlay && (
+          <RasterLayer
+            data={overlay.coordinates}
+            src={overlay.src}
+            opacity={overlay.opacity}
+          />
+        )}
         <ZoneLayer data={featureCollection} colors={colors} />
         {props?.heatmap === 'color' && (
           <HeatmapLayer data={props.subjectLocationsData} />
         )}
         {props?.heatmap === '3d' && <ZoneExtrusionLayer />}
-
-        {overlay && (
-          <RasterLayer data={overlay.coordinates} src={overlay.src} />
-        )}
 
         {iconLayer && <EvacuationPointLayer data={iconLayer} />}
         {pinMarkers}

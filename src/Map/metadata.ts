@@ -28,12 +28,14 @@ type ZoneFeatureProperties = {
   id: number;
   type: FeatureType.zone;
   zoneID: number;
+  population: number;
 };
 
 type GatewayFeatureProperties = {
   id: number;
   type: FeatureType.gateway;
   zoneID: number;
+  population: number;
 };
 export type ZoneFeature = {
   type: 'Feature';
@@ -84,6 +86,7 @@ export function setGatewayFeatureProperties(
         type: FeatureType.gateway,
         id: gatewayID,
         zoneID,
+        population: 0,
       },
     };
   });
@@ -101,14 +104,8 @@ export function setZoneFeatureProperties(
         type: FeatureType.zone,
         id: zoneID,
         zoneID: zoneID,
+        population: 0,
       },
     };
   });
-}
-
-export function stripProperties(f: Feature) {
-  return {
-    ...f,
-    properties: {},
-  };
 }
