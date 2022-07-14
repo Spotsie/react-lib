@@ -7,7 +7,7 @@ interface Props {
   opacity?: number;
 }
 
-export const RasterLayer = ({ data, src, opacity }: Props) => {
+export const RasterLayer = ({ data, src, opacity = 1 }: Props) => {
   return (
     <>
       <Source type="image" url={src} coordinates={data} id="overlay-source">
