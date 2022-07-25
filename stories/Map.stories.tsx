@@ -1,15 +1,15 @@
 import { Meta, Story } from '@storybook/react';
-import { ChangeEvent, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Map, MapProps } from '../src/Map/Map';
 import { colors } from '../src/Timeline/defaults';
-import geojson, { Feature, FeatureCollection, Point } from 'geojson';
 import produce from 'immer';
 import { zoneIds as zones } from '../src/Timeline/defaults';
-import { newFeatureCollectionFromZones } from '../src/Map/geojson';
-import { AllGeoJSON, centroid } from '@turf/turf';
-import evacuationPoints from '../src/Map/evacuationPointsData.json';
-import { PinProps } from '../src/Map/Pin';
+import { Props as PinProps } from '../src/Map/Pin';
 import React from 'react';
+import { Feature, FeatureCollection, Point } from '../src/Map/types';
+import { centroid, newFeatureCollectionFromZones } from '../src/Map/helpers';
+
+// import evacuationPoints from '../src/Map/evacuationPointsData.json';
 
 const meta: Meta = {
   title: 'Map',
@@ -21,7 +21,13 @@ const meta: Meta = {
 
 export default meta;
 
-const Template: Story<MapProps> = ({ style, heatmap }) => {
+const initialViewState = {
+  latitude: 45.28361487544451,
+  longitude: 14.53738009371364,
+  zoom: 16,
+};
+
+const Template: Story<MapProps> = ({ mapTheme, heatmap }) => {
   const [displayType, setDisplayType] = useState(heatmap);
 
   const [subjectLocations, setSubjectLocations] = useState<[number, number][]>([
@@ -41,8 +47,8 @@ const Template: Story<MapProps> = ({ style, heatmap }) => {
 
   const [followedBeacons, setFollowedBeacons] = useState<number[]>([1, 10]);
 
-  const featureCollection: geojson.FeatureCollection = useMemo(() => {
-    const fc: geojson.FeatureCollection = {
+  const featureCollection: FeatureCollection = useMemo(() => {
+    const fc: FeatureCollection = {
       type: 'FeatureCollection',
       features: newFeatureCollectionFromZones(zones),
     };
@@ -53,16 +59,16 @@ const Template: Story<MapProps> = ({ style, heatmap }) => {
   const zoneCentroidMap = useMemo(() => {
     const zoneCentroid: { [zoneID: number]: Feature<Point> } = {};
 
-    featureCollection.features.forEach((f) => {
-      zoneCentroid[f.properties!.zoneID] = centroid(f as AllGeoJSON, {
-        properties: { zoneID: f.properties?.zoneID },
+    featureCollection.features.forEach((feature) => {
+      zoneCentroid[feature.properties!.zoneID] = centroid(feature, {
+        properties: { zoneID: feature.properties?.zoneID },
       });
     });
 
     return zoneCentroid;
   }, [featureCollection]);
 
-  const zoneFeatureCollection: geojson.FeatureCollection = useMemo(() => {
+  const zoneFeatureCollection: FeatureCollection = useMemo(() => {
     const zonePopulation: { [zoneId: number]: number } = {};
     zones.forEach((zone) => (zonePopulation[zone.id] = 0));
 
@@ -124,6 +130,7 @@ const Template: Story<MapProps> = ({ style, heatmap }) => {
       const elem: PinProps = {
         longitude: zoneCentroid.geometry.coordinates[0],
         latitude: zoneCentroid.geometry.coordinates[1],
+        color: colors[focusedBeacons.length],
       };
       focusedBeacons.push(elem);
     });
@@ -135,13 +142,13 @@ const Template: Story<MapProps> = ({ style, heatmap }) => {
     <div style={{ height: 'calc(100vh - 100px)' }}>
       <Map
         mapboxAccessToken="pk.eyJ1IjoiYW50ZWciLCJhIjoiY2twN2FlcWEwMTNybDJ3czFqc210aXh3byJ9.64MwAnoP61Go4hUcEza14w"
-        style={style}
-        featureCollection={zoneFeatureCollection as geojson.FeatureCollection}
-        subjectLocationsData={subjectLocationsFc}
-        iconLayer={evacuationPoints as FeatureCollection}
+        mapTheme={mapTheme}
+        zoneFeatureCollection={zoneFeatureCollection}
+        subjectFeatureCollection={subjectLocationsFc}
+        // iconFeatureCollections={[evacuationPoints as FeatureCollection]}
         heatmap={displayType}
-        colors={colors}
         pins={pins}
+        initialViewState={initialViewState}
       />
     </div>
   );
@@ -152,7 +159,6 @@ const Template: Story<MapProps> = ({ style, heatmap }) => {
 export const DefaultMap = Template.bind({});
 
 DefaultMap.args = {
-  colors,
-  style: 'light',
+  mapTheme: 'light',
   heatmap: 'color',
 } as MapProps;
