@@ -1,15 +1,44 @@
-import { forwardRef, Fragment } from 'react';
+import { forwardRef, Fragment, CSSProperties, ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Vector3 } from 'three';
+import { Vector3, LineDashedMaterial } from 'three';
 import Timeline from './Timeline';
 import React from 'react';
-import { TimelineProps } from '..';
 import {
   TIMELINE_ID,
   TIMELINE_LABELS_ID,
   TIMELINE_PARENT_ID,
   TOOLTIP_ID,
 } from './constants';
+import { Zone } from 'proto-all-js/deployment/organization_pb';
+import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
+
+export type TimelineProps = {
+  timeFrame: { start: Date; end: Date };
+  timelineData: { [id: number]: LocationHistoryRecord.AsObject[] };
+  labels: { [id: number]: ReactNode };
+
+  zoomSensitivity?: number;
+
+  timeMarkerStyle?: Partial<LineDashedMaterial>;
+  timeMarkerLabelStyle?: CSSProperties;
+  dateMarkerStyle?: Partial<LineDashedMaterial>;
+  dateMarkerLabelStyle?: CSSProperties;
+  trackerIdStyle?: CSSProperties;
+
+  trackHeight?: number;
+  trackGap?: number;
+  trackTopOffset?: number;
+
+  colors: string[];
+  zoneIds: Zone.AsObject[];
+
+  selectedZone: number | null;
+
+  onClickZone(zoneId: number): void;
+
+  onScroll(timeFrame: { start?: Date; end?: Date }): void;
+  style?: CSSProperties;
+};
 
 export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
   (

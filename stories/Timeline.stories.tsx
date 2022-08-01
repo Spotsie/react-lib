@@ -8,6 +8,7 @@ import {
 } from '../src/Timeline/defaults';
 import { TimelineContainer, TimelineProps } from '../src/index';
 import { useEffect, useState } from 'react';
+import React from 'react';
 
 const meta: Meta = {
   title: 'Timeline',
