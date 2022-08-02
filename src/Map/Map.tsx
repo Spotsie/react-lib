@@ -41,7 +41,7 @@ export type MapProps = {
   onFeatureClick?: (e: Feature[]) => void;
   zoneFeatureCollection: FeatureCollection;
   subjectFeatureCollection: FeatureCollection;
-  iconFeatureCollections?: FeatureCollection[];
+  iconFeatureCollection?: FeatureCollection;
   heatmap?: MapDisplayType;
   pins?: PinProps[];
   overlay?: {
@@ -62,7 +62,7 @@ export function Map({
   pins,
   zoneFeatureCollection,
   subjectFeatureCollection,
-  iconFeatureCollections,
+  iconFeatureCollection,
   overlay,
   heatmap,
   onFeatureClick,
@@ -105,9 +105,9 @@ export function Map({
       {heatmap === 'color' && <HeatmapLayer data={subjectFeatureCollection} />}
       {heatmap === '3d' && <ZoneExtrusionLayer />}
 
-      {iconFeatureCollections?.map((iconFc, index) => (
-        <EvacuationPointLayer key={`icon-layer-${index}`} data={iconFc} />
-      ))}
+      {iconFeatureCollection && (
+        <EvacuationPointLayer data={iconFeatureCollection} />
+      )}
 
       {pinMarkers}
       {children}
