@@ -91,6 +91,8 @@ const defaultDateLabelStyle: CSSProperties = {
   top: '20px',
 };
 
+const MAX_SCALE = 1200;
+
 const Timeline = ({
   timeFrame,
   timelineData,
@@ -123,6 +125,8 @@ const Timeline = ({
 
   const timeout = useRef<NodeJS.Timeout>();
 
+  const [loaded, setLoaded] = useState(false);
+
   useEffect(() => {
     const labels = document.getElementById(TIMELINE_LABELS_ID);
     if (!labels) {
@@ -141,7 +145,7 @@ const Timeline = ({
       gl.domElement.clientWidth;
 
     camera.position.setX(cameraPosition);
-    camera.scale.setX(cameraScale);
+    camera.scale.setX(Math.min(cameraScale, MAX_SCALE));
     camera.updateProjectionMatrix();
 
     invalidate();
@@ -340,6 +344,11 @@ const Timeline = ({
   }, [tooltip]);
 
   useEffect(() => {
+    if (!loaded) {
+      setLoaded(true);
+      return;
+    }
+
     const cameraStart =
       camera.position.x - (gl.domElement.clientWidth * camera.scale.x) / 2;
     const cameraEnd =
