@@ -1,111 +1,36 @@
 import { ThreeEvent, useThree } from '@react-three/fiber';
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  LineDashedMaterial,
-  Color,
-  Mesh,
-  MeshBasicMaterial,
-  BufferGeometry,
-} from 'three';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Mesh, MeshBasicMaterial, BufferGeometry } from 'three';
 import TimeMarkers from './TimeMarkers';
-import { Zone } from 'proto-all-js/deployment/organization_pb';
 import TimelineTracks from './TimelineTracks';
 import add from 'date-fns/add';
 import React from 'react';
 import ScrollControls from './utils/ScrollControls';
 import useCameraUpdate from './utils/useCameraUpdate';
-import { TimelineProps } from '..';
 import {
   TOOLTIP_ID,
-  TIMELINE_ID,
   TIMELINE_LABELS_ID,
   HOVER_ANIMATION_DELAY,
+  TIME_MARKER_LABEL_STYLE,
+  TIME_MARKER_STYLE,
+  DATE_MARKER_LABEL_STYLE,
+  DATE_MARKER_STYLE,
+  MARKER_BREAKPOINTS,
+  MAX_SCALE,
 } from './constants';
 import DragControls from './utils/DragControls';
+import { TimelineCanvasProps, TooltipData } from './types';
 
-interface TooltipData {
-  duration: number;
-  point: { x: number; y: number };
-  zone: Zone.AsObject;
-}
-
-interface MarkerBreakpoint {
-  minScale: number;
-  interval: Duration;
-  timeFormat: string;
-}
-
-const MARKER_BREAKPOINTS: MarkerBreakpoint[] = [
-  { minScale: 1080, interval: { days: 1 }, timeFormat: 'HH:mm' },
-  { minScale: 720, interval: { hours: 18 }, timeFormat: 'HH:mm' },
-  { minScale: 360, interval: { hours: 12 }, timeFormat: 'HH:mm' },
-  { minScale: 280, interval: { hours: 8 }, timeFormat: 'HH:mm' },
-  { minScale: 230, interval: { hours: 6 }, timeFormat: 'HH:mm' },
-  { minScale: 150, interval: { hours: 4 }, timeFormat: 'HH:mm' },
-  { minScale: 120, interval: { hours: 2 }, timeFormat: 'HH:mm' },
-  { minScale: 86, interval: { hours: 1, minutes: 30 }, timeFormat: 'HH:mm' },
-  { minScale: 60, interval: { hours: 1 }, timeFormat: 'HH:mm' },
-  { minScale: 38, interval: { minutes: 45 }, timeFormat: 'HH:mm' },
-  { minScale: 25, interval: { minutes: 30 }, timeFormat: 'HH:mm' },
-  { minScale: 18, interval: { minutes: 20 }, timeFormat: 'HH:mm' },
-  { minScale: 13, interval: { minutes: 15 }, timeFormat: 'HH:mm' },
-  { minScale: 7, interval: { minutes: 10 }, timeFormat: 'HH:mm' },
-  { minScale: 3.4, interval: { minutes: 5 }, timeFormat: 'HH:mm' },
-  { minScale: 3, interval: { minutes: 4 }, timeFormat: 'HH:mm' },
-  { minScale: 1.5, interval: { minutes: 2 }, timeFormat: 'HH:mm' },
-  {
-    minScale: 0.4,
-    interval: { minutes: 1, seconds: 30 },
-    timeFormat: 'HH:mm:ss',
-  },
-  { minScale: 0.5, interval: { seconds: 50 }, timeFormat: 'HH:mm:ss' },
-  { minScale: 0.2, interval: { seconds: 20 }, timeFormat: 'HH:mm:ss' },
-  { minScale: 0, interval: { seconds: 10 }, timeFormat: 'HH:mm:ss' },
-];
-
-const defaultTimeMarkerLabelStyle: CSSProperties = {
-  position: 'absolute',
-  color: '#cbd5e0',
-  top: '45px',
-  fontFamily: 'Helvetica',
-  fontWeight: '700',
-  fontSize: '0.75rem',
-};
-const defaultTimeMarkerStyle: Partial<LineDashedMaterial> = {
-  color: new Color('#a0aec0'),
-  linewidth: 1,
-  dashSize: 3,
-  gapSize: 3,
-};
-const defaultDateMarkerStyle: Partial<LineDashedMaterial> = {
-  color: new Color('#a0aec0'),
-  linewidth: 3,
-  dashSize: 3,
-  gapSize: 3,
-};
-const defaultDateLabelStyle: CSSProperties = {
-  position: 'absolute',
-  color: '#a0aec0',
-  fontFamily: 'Helvetica',
-  fontSize: '0.75rem',
-  top: '20px',
-};
-
-const MAX_SCALE = 1200;
-
-const Timeline = ({
+export const Timeline = ({
   timeFrame,
   timelineData,
 
-  zoomSensitivity = 0.25,
+  zoomSensitivity,
 
-  timeMarkerStyle,
-  timeMarkerLabelStyle,
-  dateMarkerStyle,
-  dateMarkerLabelStyle,
-  trackHeight = 25,
-  trackGap = 10,
-  trackTopOffset = 20,
+  trackHeight,
+  trackGap,
+  trackTopOffset,
+
   colors,
   zoneIds,
 
@@ -113,7 +38,7 @@ const Timeline = ({
 
   onClickZone,
   onScroll,
-}: Omit<TimelineProps, 'labels'>) => {
+}: TimelineCanvasProps) => {
   const { gl, invalidate } = useThree(({ gl, invalidate }) => ({
     gl,
     invalidate,
@@ -121,20 +46,12 @@ const Timeline = ({
   const camera = useCameraUpdate();
 
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
+
   const meshRef = useRef<Mesh>(null);
 
   const timeout = useRef<NodeJS.Timeout>();
 
   const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    const labels = document.getElementById(TIMELINE_LABELS_ID);
-    if (!labels) {
-      return;
-    }
-
-    labels.style.top = `${camera.position.y + trackTopOffset}px`;
-  }, [camera.position.y, trackTopOffset]);
 
   useEffect(() => {
     const cameraPosition =
@@ -151,7 +68,16 @@ const Timeline = ({
     invalidate();
   }, []);
 
-  const markers = useMemo(() => {
+  useEffect(() => {
+    const labels = document.getElementById(TIMELINE_LABELS_ID);
+    if (!labels) {
+      return;
+    }
+
+    labels.style.top = `${camera.position.y + trackTopOffset}px`;
+  }, [camera.position.y, trackTopOffset]);
+
+  const timeMarkers = useMemo(() => {
     const currentScaled =
       camera.position.x - (gl.domElement.clientWidth * camera.scale.x) / 2;
     const endScaled =
@@ -178,23 +104,11 @@ const Timeline = ({
         period={{ start: currentCameraTime, end: endCameraTime }}
         interval={interval}
         timeFormat={breakpoint.timeFormat}
-        timeMarkerLabelStyle={{
-          ...defaultTimeMarkerLabelStyle,
-          ...timeMarkerLabelStyle,
-        }}
-        timeMarkerStyle={{
-          ...defaultTimeMarkerStyle,
-          ...timeMarkerStyle,
-        }}
+        timeMarkerLabelStyle={TIME_MARKER_LABEL_STYLE}
+        timeMarkerStyle={TIME_MARKER_STYLE}
       />
     );
-  }, [
-    camera.position.x,
-    camera.scale.x,
-    gl.domElement.clientWidth,
-    timeMarkerLabelStyle,
-    timeMarkerStyle,
-  ]);
+  }, [camera.position.x, camera.scale.x, gl.domElement.clientWidth]);
 
   const dateMarkers = useMemo(() => {
     const currentScaled =
@@ -207,7 +121,7 @@ const Timeline = ({
     }
 
     let currentCameraTime = Number(currentScaled.toFixed(1));
-    let endCameraTime = Number(endScaled.toFixed(1));
+    const endCameraTime = Number(endScaled.toFixed(1));
 
     const interval = durationToSeconds({ days: 1 });
     const dateFormat = 'dd.MM.yyyy.';
@@ -221,21 +135,12 @@ const Timeline = ({
         period={{ start: currentCameraTime, end: endCameraTime }}
         interval={interval}
         timeFormat={dateFormat}
-        timeMarkerLabelStyle={{
-          ...defaultDateLabelStyle,
-          ...dateMarkerLabelStyle,
-        }}
-        timeMarkerStyle={{ ...defaultDateMarkerStyle, ...dateMarkerStyle }}
+        timeMarkerLabelStyle={DATE_MARKER_LABEL_STYLE}
+        timeMarkerStyle={DATE_MARKER_STYLE}
         isDate
       />
     );
-  }, [
-    camera.position.x,
-    camera.scale.x,
-    dateMarkerLabelStyle,
-    dateMarkerStyle,
-    gl.domElement.clientWidth,
-  ]);
+  }, [camera.position.x, camera.scale.x, gl.domElement.clientWidth]);
 
   const tracks = useMemo(
     () => (
@@ -250,11 +155,13 @@ const Timeline = ({
         onClickZone={onClickZone}
       />
     ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [timelineData, timeFrame, selectedZone]
   );
 
-  const handleEnter = (e: ThreeEvent<MouseEvent>) => {
+  const handleMoveTrack = (e: ThreeEvent<MouseEvent>) => {
+    const tooltipX = e.nativeEvent.offsetX;
+    const tooltipY = e.nativeEvent.offsetY;
+
     clearTimeout(timeout.current);
 
     const hoveredMesh = e.intersections[0].object as Mesh<
@@ -266,8 +173,8 @@ const Timeline = ({
       setTooltip({
         ...tooltip,
         point: {
-          x: e.nativeEvent.clientX,
-          y: e.nativeEvent.clientY,
+          x: tooltipX,
+          y: tooltipY,
         },
       });
 
@@ -299,44 +206,42 @@ const Timeline = ({
       setTooltip({
         duration,
         point: {
-          x: e.nativeEvent.clientX,
-          y: e.nativeEvent.clientY,
+          x: tooltipX,
+          y: tooltipY,
         },
         zone: hoveredMesh.userData.zone,
       });
     }, HOVER_ANIMATION_DELAY);
   };
 
-  const handleLeave = () => {
+  const handleLeaveTrack = () => {
     clearTimeout(timeout.current);
 
     setTooltip(null);
   };
 
   useEffect(() => {
-    const el = document.getElementById(TOOLTIP_ID);
-    if (!el) {
+    const tooltipContainer = document.getElementById(TOOLTIP_ID);
+    if (!tooltipContainer) {
       return;
     }
 
     if (!tooltip) {
-      el.style.display = 'none';
+      tooltipContainer.style.display = 'none';
       return;
     }
 
-    const ele = document.getElementById(TIMELINE_ID);
-    if (!ele) {
-      return;
-    }
+    const zoneIndex = zoneIds.findIndex(
+      (zoneId) => zoneId.id === tooltip.zone.id
+    );
+    const zoneColor = colors[zoneIndex];
 
-    el.style.display = 'block';
-    el.style.left = `${tooltip.point.x}px`;
-    el.style.top = `${
-      tooltip.point.y - 65 + document.documentElement.scrollTop
-    }px`;
-    el.style.borderColor = colors[tooltip.zone.id - 1];
-    el.style.color = colors[tooltip.zone.id - 1];
-    el.innerHTML = `
+    tooltipContainer.style.display = 'block';
+    tooltipContainer.style.left = `calc(${tooltip.point.x}px + 4rem)`;
+    tooltipContainer.style.top = `${tooltip.point.y}px`;
+    tooltipContainer.style.borderColor = zoneColor;
+    tooltipContainer.style.color = zoneColor;
+    tooltipContainer.innerHTML = `
     <div>${tooltip.zone.config?.name ?? `Zona ${tooltip.zone.id}`}</div>
     <div style="color: black !important">${formatDuration(
       tooltip.duration
@@ -344,7 +249,7 @@ const Timeline = ({
   }, [tooltip]);
 
   useEffect(() => {
-    if (!loaded) {
+    if (!onScroll || !loaded) {
       setLoaded(true);
       return;
     }
@@ -373,12 +278,12 @@ const Timeline = ({
   return (
     <>
       <group>
-        <group>{markers}</group>
+        <group>{timeMarkers}</group>
 
         <group>{dateMarkers}</group>
         <mesh
-          onPointerMove={handleEnter}
-          onPointerLeave={handleLeave}
+          onPointerMove={handleMoveTrack}
+          onPointerLeave={handleLeaveTrack}
           ref={meshRef}
         >
           {tracks}
@@ -397,8 +302,6 @@ const Timeline = ({
     </>
   );
 };
-
-export default Timeline;
 
 const durationToSeconds = (duration: Duration) =>
   add(0, duration).getTime() / 1000;

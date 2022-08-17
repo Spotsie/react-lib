@@ -11,7 +11,7 @@ import {
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import React from 'react';
 import useCameraUpdate from './utils/useCameraUpdate';
-import { TIMELINE_ID, TIMELINE_PARENT_ID } from './constants';
+import { TIMELINE_PARENT_ID } from './constants';
 
 interface Props {
   period: { start: number; end: number };
@@ -49,18 +49,6 @@ const TimeMarkers = ({
   const gl = useThree(({ gl }) => gl);
   const camera = useCameraUpdate();
 
-  const parentLeftPadding = useMemo(() => {
-    const timelineElement = document.getElementById(TIMELINE_ID);
-    if (!timelineElement) {
-      return 0;
-    }
-
-    return +window
-      .getComputedStyle(timelineElement)
-      .getPropertyValue('padding-left')
-      .replace('px', '');
-  }, []);
-
   const xPositions = useMemo(() => {
     const positions: number[] = [];
     let { start, end } = period;
@@ -90,12 +78,11 @@ const TimeMarkers = ({
     const cameraStartPosition =
       camera.position.x - (gl.domElement.clientWidth * camera.scale.x) / 2;
 
-    flexRef.current.style.left = `${
+    flexRef.current.style.left = `calc(${
       camera.worldToLocal(new Vector3(xPositions[0])).x -
-      camera.worldToLocal(new Vector3(cameraStartPosition)).x +
-      parentLeftPadding -
+      camera.worldToLocal(new Vector3(cameraStartPosition)).x -
       childWidth / 2
-    }px`;
+    }px + 4rem)`;
   });
 
   useEffect(() => {
@@ -123,9 +110,9 @@ const TimeMarkers = ({
       document.getElementById(TIMELINE_PARENT_ID)?.appendChild(currDateMarker);
       currDateMarkerRef.current = currDateMarker;
 
-      currDateMarker.style.left = `${
-        parentLeftPadding - currDateMarker.getBoundingClientRect().width / 2
-      }px`;
+      currDateMarker.style.left = `calc(4rem - ${
+        currDateMarker.getBoundingClientRect().width / 2
+      }px)`;
     }
 
     const geoms = xPositions.map((xPos) => {
@@ -158,7 +145,6 @@ const TimeMarkers = ({
   }, [
     gl.domElement.clientHeight,
     gl.domElement.clientWidth,
-    parentLeftPadding,
     period.start,
     timeFormat,
     timeMarkerLabelStyle,

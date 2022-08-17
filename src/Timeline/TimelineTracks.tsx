@@ -1,9 +1,8 @@
-import { useThree } from '@react-three/fiber';
-import { Zone } from 'proto-all-js/deployment/organization_pb';
+import { MeshProps, useThree } from '@react-three/fiber';
 import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
 import React, { useState } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
-import { BufferGeometry, Color, Mesh, Vector2 } from 'three';
+import { BufferGeometry, Color, Vector2, Vector3 } from 'three';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { HOVER_ANIMATION_DELAY, NON_HIGHLIGHTED_COLOR } from './constants';
 import {
@@ -12,21 +11,7 @@ import {
   disposeBoundsTree,
 } from 'three-mesh-bvh';
 import { motion } from 'framer-motion-3d';
-
-interface Props {
-  locationRecords: { [id: number]: LocationHistoryRecord.AsObject[] };
-
-  trackHeight: number;
-  trackGap: number;
-  topOffset: number;
-
-  colors: string[];
-  zoneIds: Zone.AsObject[];
-
-  selectedZone: number | null;
-
-  onClickZone(zoneId: number | null): void;
-}
+import { TimelineTrackProps } from './types';
 
 const TimelineTracks = ({
   locationRecords,
@@ -37,23 +22,23 @@ const TimelineTracks = ({
   zoneIds,
   selectedZone,
   onClickZone,
-}: Props) => {
+}: TimelineTrackProps) => {
   const [hoveredZone, setHoveredZone] = useState<number | null>(null);
 
-  const meshRefs = useRef<Mesh[]>([]);
+  const meshRefs = useRef<MeshProps[]>([]);
 
   // use BVH computations instead of 3js raytracing
   const useBVHs = () => {
     const geometries: BufferGeometry[] = [];
 
     meshRefs.current.forEach((mesh) => {
-      if (!mesh.geometry.attributes.position) {
+      if (!mesh.geometry?.attributes.position) {
         return;
       }
 
       mesh.raycast = acceleratedRaycast;
 
-      const geometry: any = mesh.geometry;
+      const geometry = mesh.geometry;
       geometries.push(mesh.geometry);
 
       geometry.computeBoundsTree = computeBoundsTree;
@@ -147,7 +132,7 @@ const TimelineTracks = ({
       meshRefs.current[zone].userData = {
         zone: zoneIds.find(({ id }) => id === zone),
       };
-      meshRefs.current[zone].updateMatrix();
+      meshRefs.current[zone].updateMatrix?.();
     });
 
     useBVHs();
@@ -156,8 +141,8 @@ const TimelineTracks = ({
 
   useEffect(() => {
     meshRefs.current.forEach((mesh) => {
-      mesh.position.setX(initialTrackXPos);
-      mesh.updateMatrix();
+      (mesh.position as Vector3).setX(initialTrackXPos);
+      mesh.updateMatrix?.();
     });
   }, [initialTrackXPos]);
 
@@ -177,10 +162,10 @@ const TimelineTracks = ({
                   return;
                 }
 
-                meshRefs.current[zoneId] = el as any;
+                meshRefs.current[zoneId] = el;
               }}
               position={[initialTrackXPos, 0, 0]}
-              onClick={() => onClickZone(zoneId)}
+              onClick={() => onClickZone?.(zoneId)}
               onPointerEnter={() => setHoveredZone(zoneId)}
               onPointerLeave={() => setHoveredZone(null)}
               animate={

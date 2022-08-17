@@ -1,44 +1,18 @@
-import { forwardRef, Fragment, CSSProperties, ReactNode } from 'react';
+import { forwardRef, Fragment } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Vector3, LineDashedMaterial } from 'three';
-import Timeline from './Timeline';
+import { Vector3 } from 'three';
+import { Timeline } from './Timeline';
 import React from 'react';
 import {
-  TIMELINE_ID,
   TIMELINE_LABELS_ID,
   TIMELINE_PARENT_ID,
   TOOLTIP_ID,
+  TRACK_GAP,
+  TRACK_HEIGHT,
+  TRACK_TOP_OFFSET,
+  ZOOM_SENSITIVITY,
 } from './constants';
-import { Zone } from 'proto-all-js/deployment/organization_pb';
-import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
-
-export type TimelineProps = {
-  timeFrame: { start: Date; end: Date };
-  timelineData: { [id: number]: LocationHistoryRecord.AsObject[] };
-  labels: { [id: number]: ReactNode };
-
-  zoomSensitivity?: number;
-
-  timeMarkerStyle?: Partial<LineDashedMaterial>;
-  timeMarkerLabelStyle?: CSSProperties;
-  dateMarkerStyle?: Partial<LineDashedMaterial>;
-  dateMarkerLabelStyle?: CSSProperties;
-  trackerIdStyle?: CSSProperties;
-
-  trackHeight?: number;
-  trackGap?: number;
-  trackTopOffset?: number;
-
-  colors: string[];
-  zoneIds: Zone.AsObject[];
-
-  selectedZone: number | null;
-
-  onClickZone(zoneId: number): void;
-
-  onScroll(timeFrame: { start?: Date; end?: Date }): void;
-  style?: CSSProperties;
-};
+import { TimelineProps } from './types';
 
 export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
   (
@@ -46,10 +20,10 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
       timeFrame,
       timelineData,
       labels,
-      zoomSensitivity,
-      trackHeight = 15,
-      trackGap = 10,
-      trackTopOffset = 20,
+      zoomSensitivity = ZOOM_SENSITIVITY,
+      trackHeight = TRACK_HEIGHT,
+      trackGap = TRACK_GAP,
+      trackTopOffset = TRACK_TOP_OFFSET,
       colors,
       selectedZone,
       onClickZone,
@@ -69,7 +43,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
     return zoneIds.length !== 0 &&
       Object.keys(timelineData).length !== 0 &&
       colors.length !== 0 ? (
-      <>
+      <div style={{ position: 'relative', height: '100%' }}>
         <div
           id={TIMELINE_PARENT_ID}
           ref={ref}
@@ -77,7 +51,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
             position: 'relative',
             backgroundColor: '#f7fafc',
             overflow: 'hidden',
-            height: '40rem',
+            height: 'calc(100% - 6rem)',
             paddingBottom: '6rem',
             userSelect: 'none',
             ...style,
@@ -91,54 +65,44 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
               top: '4.2rem',
             }}
           >
-            <div
+            <Canvas
               style={{
-                paddingLeft: '4rem',
-                paddingRight: '2rem',
+                height: '100%',
+                width: 'calc(100% - 6rem)',
+                left: '4rem',
                 overflow: 'hidden',
                 position: 'relative',
-                height: 'calc(40rem - 6rem)',
                 backgroundColor: '#f7fafc',
               }}
-              id={TIMELINE_ID}
+              camera={{
+                position: timeFrameCenter,
+                lookAt: (_x) => {
+                  _x = timeFrameCenter.x;
+                },
+              }}
+              gl={{
+                preserveDrawingBuffer: true,
+                powerPreference: 'high-performance',
+                antialias: false,
+              }}
+              orthographic
+              frameloop="demand"
             >
-              <Canvas
-                camera={{
-                  position: timeFrameCenter,
-                  ///@ts-ignore
-                  lookAt: (x) => {
-                    x = timeFrameCenter.x;
-                  },
-                }}
-                gl={{
-                  preserveDrawingBuffer: true,
-                  powerPreference: 'high-performance',
-                  antialias: false,
-                }}
-                orthographic
-                frameloop="demand"
-                onCreated={(state) => {
-                  if (state.gl.domElement.parentElement) {
-                    state.gl.domElement.parentElement.style.height = '100%';
-                  }
-                }}
-              >
-                <Timeline
-                  zoomSensitivity={zoomSensitivity}
-                  trackHeight={trackHeight}
-                  trackGap={trackGap}
-                  trackTopOffset={trackTopOffset}
-                  colors={colors}
-                  timelineData={timelineData}
-                  timeFrame={timeFrame}
-                  selectedZone={selectedZone}
-                  onClickZone={onClickZone}
-                  zoneIds={zoneIds}
-                  onScroll={onScroll}
-                  {...props}
-                />
-              </Canvas>
-            </div>
+              <Timeline
+                zoomSensitivity={zoomSensitivity}
+                trackHeight={trackHeight}
+                trackGap={trackGap}
+                trackTopOffset={trackTopOffset}
+                colors={colors}
+                timelineData={timelineData}
+                timeFrame={timeFrame}
+                selectedZone={selectedZone}
+                onClickZone={onClickZone}
+                zoneIds={zoneIds}
+                onScroll={onScroll}
+                {...props}
+              />
+            </Canvas>
 
             <div
               style={{
@@ -176,7 +140,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
           }}
           id={TOOLTIP_ID}
         />
-      </>
+      </div>
     ) : (
       <></>
     );

@@ -6,9 +6,10 @@ import {
   getTimelineData,
   zoneIds,
 } from '../src/Timeline/defaults';
-import { TimelineContainer, TimelineProps } from '../src/index';
+import { TimelineContainer } from '../src/index';
 import { useEffect, useState } from 'react';
 import React from 'react';
+import { TimelineProps } from '../src/Timeline/types';
 
 const meta: Meta = {
   title: 'Timeline',
@@ -64,6 +65,8 @@ const Template: Story<TimelineProps> = ({
     setTimeFrame({ ...timeFrame, ...newTimeFrame });
   };
 
+  const [hidden, setHidden] = useState(false);
+
   return (
     <>
       <div>
@@ -73,14 +76,23 @@ const Template: Story<TimelineProps> = ({
             <button onClick={() => handleClickZone(zone.id)}>{zone.id}</button>
           ))}
       </div>
-      <TimelineContainer
-        timeFrame={timeFrame}
-        timelineData={timelineData}
-        onClickZone={handleClickZone}
-        selectedZone={selectedZone}
-        onScroll={handleScroll}
-        {...props}
+      <input
+        type="checkbox"
+        onChange={({ currentTarget }) => setHidden(currentTarget.checked)}
       />
+
+      <div style={{ width: '100%', height: '40rem' }}>
+        {!hidden && (
+          <TimelineContainer
+            timeFrame={timeFrame}
+            timelineData={timelineData}
+            onClickZone={handleClickZone}
+            selectedZone={selectedZone}
+            onScroll={handleScroll}
+            {...props}
+          />
+        )}
+      </div>
     </>
   );
 };
