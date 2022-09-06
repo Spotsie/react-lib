@@ -35,6 +35,8 @@ export type MapTheme = keyof typeof mapThemes;
 
 export type MapDisplayType = '3d' | 'color';
 
+export type MapMode = 'normal' | 'heatmap';
+
 export type MapProps = {
   children?: ReactNode;
   mapTheme?: keyof typeof mapThemes;
@@ -49,6 +51,7 @@ export type MapProps = {
     src: string;
     opacity?: number;
   };
+  mode?: MapMode;
 } & Omit<MapboxProps, 'fog' | 'terrain' | 'mapStyle'>;
 
 const scaleControlStyle = {
@@ -67,6 +70,7 @@ export function Map({
   heatmap,
   onFeatureClick,
   cursor = 'crosshair',
+  mode = 'normal',
   ...props
 }: MapProps) {
   const handleOnClick = (e: MapLayerMouseEvent) => {
@@ -102,8 +106,17 @@ export function Map({
       )}
       <ZoneLayer data={zoneFeatureCollection} />
 
-      {heatmap === 'color' && <HeatmapLayer data={subjectFeatureCollection} />}
-      {heatmap === '3d' && <ZoneExtrusionLayer />}
+      {mode === 'normal' && (
+        <>
+          {heatmap === 'color' && (
+            <HeatmapLayer data={subjectFeatureCollection} mode={mode} />
+          )}
+          {heatmap === '3d' && <ZoneExtrusionLayer />}
+        </>
+      )}
+      {mode === 'heatmap' && (
+        <HeatmapLayer data={subjectFeatureCollection} mode={mode} />
+      )}
 
       {iconFeatureCollection && (
         <EvacuationPointLayer data={iconFeatureCollection} />
