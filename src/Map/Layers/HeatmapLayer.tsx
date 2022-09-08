@@ -74,7 +74,6 @@ const layerProps: LayerProps = {
 const impreciseLayerProps: LayerProps = {
   id: 'heatmap-layer',
   beforeId: 'zone-population-layer',
-  maxzoom: MAX_ZOOM_LEVEL,
   type: 'heatmap',
   paint: {
     'heatmap-intensity': 1,

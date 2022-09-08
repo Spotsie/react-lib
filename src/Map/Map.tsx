@@ -1,12 +1,12 @@
 import React, { ReactNode, useMemo } from 'react';
 import Pin, { Props as PinProps } from './Pin';
-import { Feature, FeatureCollection } from './types';
+import { FeatureCollection, Point } from './types';
 
 import ReactMapGL, {
   ScaleControl,
   MapProps as MapboxProps,
 } from 'react-map-gl';
-import mapboxgl, { MapLayerMouseEvent } from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import RasterLayer from './Layers/RasterLayer';
@@ -14,6 +14,7 @@ import EvacuationPointLayer from './Layers/EvacuationPointLayer';
 import HeatmapLayer from './Layers/HeatmapLayer';
 import ZoneExtrusionLayer from './Layers/ZoneExtrusionLayer';
 import ZoneLayer from './Layers/ZoneLayer';
+import ApproximationLayer from './Layers/ApproximationLayer';
 
 // The following is required to stop "npm build" from transpiling mapbox code
 // @ts-ignore
@@ -35,14 +36,14 @@ export type MapTheme = keyof typeof mapThemes;
 
 export type MapDisplayType = '3d' | 'color';
 
-export type MapMode = 'normal' | 'heatmap';
+export type MapMode = 'normal' | 'heatmap' | 'approximation';
 
 export type MapProps = {
   children?: ReactNode;
   mapTheme?: keyof typeof mapThemes;
-  onFeatureClick?: (e: Feature[]) => void;
+  onFeatureClick?(properties: { [key: string]: any }): ReactNode;
   zoneFeatureCollection: FeatureCollection;
-  subjectFeatureCollection: FeatureCollection;
+  subjectFeatureCollection: FeatureCollection<Point>;
   iconFeatureCollection?: FeatureCollection;
   heatmap?: MapDisplayType;
   pins?: PinProps[];
@@ -73,15 +74,16 @@ export function Map({
   mode = 'normal',
   ...props
 }: MapProps) {
-  const handleOnClick = (e: MapLayerMouseEvent) => {
-    if (e.features && e.features.length > 0) {
-      onFeatureClick?.(e.features);
-    }
-  };
-
   const pinMarkers = useMemo(
     () =>
-      pins?.map((coords, index) => <Pin key={`pin-${index}`} {...coords} />),
+      pins?.map((coords, index) => (
+        <Pin
+          popup={onFeatureClick !== undefined}
+          onFeatureClick={onFeatureClick}
+          key={`pin-${index}`}
+          {...coords}
+        />
+      )),
     [pins]
   );
 
@@ -93,7 +95,6 @@ export function Map({
         height: '100%',
       }}
       cursor={cursor}
-      onClick={handleOnClick}
       preserveDrawingBuffer={true}
       {...props}
     >
@@ -116,6 +117,13 @@ export function Map({
       )}
       {mode === 'heatmap' && (
         <HeatmapLayer data={subjectFeatureCollection} mode={mode} />
+      )}
+      {mode === 'approximation' && (
+        <ApproximationLayer
+          data={subjectFeatureCollection}
+          popup={onFeatureClick !== undefined}
+          onFeatureClick={onFeatureClick}
+        />
       )}
 
       {iconFeatureCollection && (

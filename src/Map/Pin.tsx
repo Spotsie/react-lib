@@ -1,5 +1,5 @@
-import React, { CSSProperties, SVGProps } from 'react';
-import { Marker } from 'react-map-gl';
+import React, { CSSProperties, ReactNode, SVGProps, useState } from 'react';
+import { Marker, Popup } from 'react-map-gl';
 
 type IconProps = { size: number } & SVGProps<SVGSVGElement>;
 
@@ -31,13 +31,55 @@ const pinStyle: Partial<CSSProperties> = {
 export type Props = {
   longitude: number;
   latitude: number;
+  properties?: { [key: string]: any } | null;
   color?: string;
+  popup?: boolean;
+  onFeatureClick?(properties: { [key: string]: any }): ReactNode;
 };
 
-const Pin = ({ longitude, latitude, color }: Props) => (
-  <Marker longitude={longitude} latitude={latitude}>
-    <Icon style={pinStyle} size={32} color={color} />
-  </Marker>
-);
+const Pin = ({
+  longitude,
+  latitude,
+  color,
+  popup,
+  properties,
+  onFeatureClick,
+}: Props) => {
+  const [popupShow, setPopupShow] = useState<ReactNode>(null);
+
+  return (
+    <>
+      {popup && popupShow && (
+        <Popup
+          anchor="bottom"
+          longitude={longitude}
+          latitude={latitude}
+          onClose={() => setPopupShow(null)}
+          offset={23}
+        >
+          {popupShow}
+        </Popup>
+      )}
+
+      <Marker
+        longitude={longitude}
+        latitude={latitude}
+        onClick={(e) => {
+          // Doesn't work without this
+          if (!properties || !onFeatureClick) {
+            return;
+          }
+          e.originalEvent.stopPropagation();
+
+          const element = onFeatureClick(properties);
+
+          setPopupShow(element);
+        }}
+      >
+        <Icon style={pinStyle} size={32} color={color} />
+      </Marker>
+    </>
+  );
+};
 
 export default Pin;
