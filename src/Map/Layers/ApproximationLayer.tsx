@@ -33,21 +33,23 @@ const layerProps: LayerProps = {
 };
 
 type Props = {
-  data: FeatureCollection<Point>;
+  data?: FeatureCollection<Point>;
   popup?: boolean;
   onFeatureClick?(properties: { [key: string]: any }): ReactNode;
 };
 
 const ApproximationLayer = ({ data, popup, onFeatureClick }: Props) => {
-  const pins = data.features.map(({ geometry, properties }: Feature<Point>) => (
-    <Pin
-      latitude={geometry.coordinates[1]}
-      longitude={geometry.coordinates[0]}
-      properties={properties}
-      popup={popup}
-      onFeatureClick={onFeatureClick}
-    />
-  ));
+  const pins = data?.features.map(
+    ({ geometry, properties }: Feature<Point>) => (
+      <Pin
+        latitude={geometry.coordinates[1]}
+        longitude={geometry.coordinates[0]}
+        properties={properties}
+        popup={popup}
+        onFeatureClick={onFeatureClick}
+      />
+    )
+  );
 
   return (
     <>
