@@ -44,7 +44,7 @@ export const newFeatureCollectionFromZones = (
     })
     .flat(1);
 
-export const centroid = <P>(
+export const centroid = <P extends GeoJsonProperties>(
   geojson: GeoJSON,
   options: { properties?: P } = {}
 ): Feature<Point> => {
@@ -251,7 +251,7 @@ const coordEach = (
   return false;
 };
 
-const point = <P = GeoJsonProperties>(
+const point = <P extends GeoJsonProperties = GeoJsonProperties>(
   coordinates: Position,
   properties?: P,
   options: {

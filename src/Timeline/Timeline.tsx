@@ -231,9 +231,9 @@ export const Timeline = ({
       return;
     }
 
-    const zoneIndex = zoneIds.findIndex(
-      (zoneId) => zoneId.id === tooltip.zone.id
-    );
+    const zoneIndex = zoneIds
+      .sort((first, second) => first.id - second.id)
+      .findIndex((zoneId) => zoneId.id === tooltip.zone.id);
     const zoneColor = colors[zoneIndex];
 
     tooltipContainer.style.display = 'block';
