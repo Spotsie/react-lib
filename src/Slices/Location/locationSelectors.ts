@@ -1,12 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { EntityMap } from '../utils/arrObjConversion';
-import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
+import { LocationHistoryRecord } from 'proto/location/v1/location_pb';
 import RootState from '../utils/RootState';
 import { Interval } from '../utils/cache';
+import { PlainMessage } from '@bufbuild/protobuf';
 
 export const selectAllLocationRecords = (
   state: RootState
-): EntityMap<LocationHistoryRecord.AsObject[]> =>
+): EntityMap<PlainMessage<LocationHistoryRecord>[]> =>
   state.location.locationRecords;
 
 export const selectLocationRecords = createSelector(
@@ -20,9 +21,12 @@ export const selectLocationRecords = createSelector(
   (
     records,
     { subjectIds, timeFrame }
-  ): EntityMap<LocationHistoryRecord.AsObject[]> =>
+  ): EntityMap<PlainMessage<LocationHistoryRecord>[]> =>
     Object.entries(records).reduce(
-      (obj, [subjectId, records]: [string, LocationHistoryRecord.AsObject[]]) =>
+      (
+        obj,
+        [subjectId, records]: [string, PlainMessage<LocationHistoryRecord>[]]
+      ) =>
         subjectIds.includes(+subjectId)
           ? {
               ...obj,

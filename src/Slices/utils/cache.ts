@@ -1,5 +1,6 @@
 import { areIntervalsOverlapping } from 'date-fns';
-import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
+import { LocationHistoryRecord } from 'proto/location/v1/location_pb';
+import { PlainMessage } from '@bufbuild/protobuf';
 
 export interface Interval {
   start: Date;
@@ -103,8 +104,9 @@ export const isIntervalFullyWithinAnother = (
 ) => first.start >= second.start && first.end <= second.end;
 
 export const sortLocationHistoryRecords = (
-  records: LocationHistoryRecord.AsObject[]
-): LocationHistoryRecord.AsObject[] =>
-  (records as Required<LocationHistoryRecord.AsObject>[]).sort(
-    (first, second) => first.fromTime.seconds - second.fromTime.seconds
+  records: PlainMessage<LocationHistoryRecord>[]
+): PlainMessage<LocationHistoryRecord>[] =>
+  (records as Required<PlainMessage<LocationHistoryRecord>>[]).sort(
+    (first, second) =>
+      Number(first.fromTime.seconds) - Number(second.fromTime.seconds)
   );

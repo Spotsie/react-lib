@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { entityArrayToObject, EntityMap } from '../utils/arrObjConversion';
-import { Zone } from 'proto-all-js/deployment/organization_pb';
+import { Zone } from 'proto/deployment/v1/organization_pb';
 import { getAllZones } from './zoneReducers';
+import { PlainMessage } from '@bufbuild/protobuf';
 
 export interface ZoneState {
-  zones: EntityMap<Zone.AsObject>;
+  zones: EntityMap<PlainMessage<Zone>>;
 
   loading: boolean;
   loaded: boolean;
@@ -28,7 +29,6 @@ const zoneSlice = createSlice({
       })
       .addCase(getAllZones.fulfilled, (state, { payload }) => {
         state.zones = entityArrayToObject(payload);
-
         state.loading = false;
         state.loaded = true;
       })

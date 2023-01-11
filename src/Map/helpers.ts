@@ -1,4 +1,4 @@
-import { Zone } from 'proto-all-js/deployment/organization_pb';
+import { Zone } from 'proto/deployment/v1/organization_pb';
 import {
   BBox,
   Feature,
@@ -31,9 +31,7 @@ const setZoneFeatureProperties = (
 
 const emptyFeatureCollection: Feature[] = [];
 
-export const newFeatureCollectionFromZones = (
-  zones: Zone.AsObject[]
-): MapFeature[] =>
+export const newFeatureCollectionFromZones = (zones: Zone[]): MapFeature[] =>
   zones
     .map((zone) => {
       const fc: MapFeature[] = zone.config?.geoJson

@@ -1,13 +1,13 @@
+import { Timestamp } from '@bufbuild/protobuf';
+import { PlainMessage } from '@bufbuild/protobuf';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
-import { Subject } from 'proto-all-js/domain/domain_pb';
+import { Subject } from 'proto/domain/v1/domain_pb';
 import {
   GetLocationHistoryRequest,
   LocationHistory,
-} from 'proto-all-js/location/service_pb';
-import { LocationApi } from 'proto-all-js/location/service_pb_service';
+} from 'proto/location/v1/service_pb';
 import { getQueryRange, Interval } from '../utils/cache';
-import { API_NAMESPACE_ID, grpcUnaryRequest } from '../utils/grpc';
+import { API_NAMESPACE_ID, LocationClient } from '../utils/grpc';
 import RootState from '../utils/RootState';
 
 interface GetLocationRecordsRequest {
@@ -16,7 +16,7 @@ interface GetLocationRecordsRequest {
 }
 
 interface GetLocationRecordsResponse {
-  map: Array<[number, LocationHistory.AsObject]>;
+  map: { [key: number]: LocationHistory };
   range: Interval;
 }
 
@@ -32,7 +32,7 @@ export const getLocationRecords = createAsyncThunk<
   }
 
   try {
-    const requests: GetLocationHistoryRequest[] = [];
+    const requests: PlainMessage<GetLocationHistoryRequest>[] = [];
 
     ids.forEach((id) => {
       const cachedData = thunkAPI.getState().location.cache[id];
@@ -42,32 +42,38 @@ export const getLocationRecords = createAsyncThunk<
       if (queryRange !== null) {
         queryRange.forEach((range) => {
           const existingRequest = requests.find((req) => {
-            const { fromTime, toTime } = req.toObject();
+            const { fromTime, toTime } = req;
+            if (!fromTime || !toTime) {
+              return false;
+            }
 
             return (
-              fromTime?.seconds === Math.floor(range.start.getTime() / 1000) &&
-              toTime?.seconds === Math.floor(range.end.getTime() / 1000)
+              Number(fromTime.seconds) ===
+                Math.floor(range.start.getTime() / 1000) &&
+              Number(toTime?.seconds) === Math.floor(range.end.getTime() / 1000)
             );
           });
 
-          const subject = new Subject();
-          subject.setId(id);
-          subject.setNamespace(API_NAMESPACE_ID);
+          // @ts-ignore
+          const subject: PlainMessage<Subject> = {
+            id,
+            namespace: API_NAMESPACE_ID,
+          };
 
           if (existingRequest) {
-            existingRequest.addSubjects(subject);
+            existingRequest.subjects?.push(subject);
 
             return;
           }
 
-          const newRequest = new GetLocationHistoryRequest();
+          // @ts-ignore
+          const newRequest: PlainMessage<GetLocationHistoryRequest> = {
+            subjects: [subject],
+            fromTime: Timestamp.fromDate(range.start),
+            toTime: Timestamp.fromDate(range.end),
+          };
 
-          newRequest.setFromTime(Timestamp.fromDate(range.start));
-          newRequest.setToTime(Timestamp.fromDate(range.end));
-
-          newRequest.addSubjects(subject);
-
-          requests.push(newRequest);
+          requests.push(newRequest as any);
         });
       }
     });
@@ -86,23 +92,23 @@ export const getLocationRecords = createAsyncThunk<
   }
 });
 
-const formGrpcRequests = (requests: GetLocationHistoryRequest[]) => {
+const formGrpcRequests = (
+  requests: PlainMessage<GetLocationHistoryRequest>[]
+) => {
   const grpcRequests = requests.map((request) => {
     return new Promise<GetLocationRecordsResponse>(async (resolve, reject) => {
       try {
-        const response = await grpcUnaryRequest(
-          LocationApi.GetLocationHistory,
-          request
-        );
-        const { subjectLocationHistoryMap } = response.toObject();
+        //@ts-ignore
+        const response = await LocationClient.getLocationHistory(request);
+        const { subjectLocationHistory } = response;
         const { fromTime, toTime } = {
-          fromTime: request.getFromTime()?.toObject().seconds,
-          toTime: request.getToTime()?.toObject().seconds,
+          fromTime: Number(request.fromTime?.seconds),
+          toTime: Number(request.fromTime?.seconds),
         };
 
         if (fromTime && toTime) {
           resolve({
-            map: subjectLocationHistoryMap,
+            map: subjectLocationHistory,
             range: {
               start: new Date(fromTime * 1000),
               end: new Date(toTime * 1000),

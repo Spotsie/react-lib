@@ -1,11 +1,12 @@
-import { Zone } from 'proto-all-js/deployment/organization_pb';
-import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
+import { Zone } from 'proto/deployment/v1/organization_pb';
+import { LocationHistoryRecord } from 'proto/location/v1/location_pb';
 import { CSSProperties, ReactNode } from 'react';
+import { PlainMessage } from '@bufbuild/protobuf';
 
 export type TooltipData = {
   duration: number;
   point: { x: number; y: number };
-  zone: Zone.AsObject;
+  zone: PlainMessage<Zone>;
 };
 
 export type MarkerBreakpoint = {
@@ -16,7 +17,7 @@ export type MarkerBreakpoint = {
 
 export type TimelineProps = {
   timeFrame: { start: Date; end: Date };
-  timelineData: { [id: number]: LocationHistoryRecord.AsObject[] };
+  timelineData: { [id: number]: PlainMessage<LocationHistoryRecord>[] };
   labels: { [id: number]: ReactNode };
 
   zoomSensitivity?: number;
@@ -26,7 +27,7 @@ export type TimelineProps = {
   trackTopOffset?: number;
 
   colors: string[];
-  zoneIds: Zone.AsObject[];
+  zoneIds: PlainMessage<Zone>[];
 
   selectedZone: number | null;
 
@@ -39,7 +40,7 @@ export type TimelineProps = {
 
 export type TimelineCanvasProps = {
   timeFrame: { start: Date; end: Date };
-  timelineData: { [id: number]: LocationHistoryRecord.AsObject[] };
+  timelineData: { [id: number]: PlainMessage<LocationHistoryRecord>[] };
 
   zoomSensitivity: number;
 
@@ -48,7 +49,7 @@ export type TimelineCanvasProps = {
   trackTopOffset: number;
 
   colors: string[];
-  zoneIds: Zone.AsObject[];
+  zoneIds: PlainMessage<Zone>[];
 
   selectedZone: number | null;
 
@@ -58,14 +59,14 @@ export type TimelineCanvasProps = {
 };
 
 export type TimelineTrackProps = {
-  locationRecords: { [id: number]: LocationHistoryRecord.AsObject[] };
+  locationRecords: { [id: number]: PlainMessage<LocationHistoryRecord>[] };
 
   trackHeight: number;
   trackGap: number;
   topOffset: number;
 
   colors: string[];
-  zoneIds: Zone.AsObject[];
+  zoneIds: PlainMessage<Zone>[];
 
   selectedZone: number | null;
 

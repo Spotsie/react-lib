@@ -1,6 +1,10 @@
-import { grpc } from '@improbable-eng/grpc-web';
-import { ProtobufMessage } from '@improbable-eng/grpc-web/dist/typings/message';
-import { UnaryMethodDefinition } from '@improbable-eng/grpc-web/dist/typings/service';
+//@ts-nocheck
+import {
+  createConnectTransport,
+  createPromiseClient,
+} from '@bufbuild/connect-web';
+import { LocationService } from 'proto/location/v1/service_connectweb';
+import { DeploymentService } from 'proto/deployment/v1/service_connectweb';
 
 const DEFAULT_API_URL = 'https://api.spotsie.dev';
 export let API_URL = DEFAULT_API_URL;
@@ -13,7 +17,6 @@ try {
 } catch (error) {
   // if the process is not defined, check for webpack's DefinePlugin variable
   try {
-    // @ts-ignore
     API_URL = SPOTSIE_CLOUD_URL ?? DEFAULT_API_URL;
   } catch (err) {
     API_URL = DEFAULT_API_URL;
@@ -32,13 +35,9 @@ try {
 } catch (error) {
   // if the process is not defined, check for webpack's DefinePlugin variable
   try {
-    // @ts-ignore
-    API_ORGANIZATION_ID =
-      // @ts-ignore
-      !isNaN(Number(ORGANIZATION_ID))
-        ? // @ts-ignore
-          Number(ORGANIZATION_ID)
-        : DEFAULT_ORGANIZATION_ID;
+    API_ORGANIZATION_ID = !isNaN(Number(ORGANIZATION_ID))
+      ? Number(ORGANIZATION_ID)
+      : DEFAULT_ORGANIZATION_ID;
   } catch (err) {
     API_ORGANIZATION_ID = DEFAULT_ORGANIZATION_ID;
   }
@@ -56,46 +55,26 @@ try {
 } catch (error) {
   // if the process is not defined, check for webpack's DefinePlugin variable
   try {
-    // @ts-ignore
     API_NAMESPACE_ID = !isNaN(Number(REACT_APP_NAMESPACE_ID))
-      ? // @ts-ignore
-        Number(REACT_APP_NAMESPACE_ID)
-      : // @ts-ignore
-      !isNaN(Number(NAMESPACE_ID))
-      ? // @ts-ignore
-        Number(NAMESPACE_ID)
+      ? Number(REACT_APP_NAMESPACE_ID)
+      : !isNaN(Number(NAMESPACE_ID))
+      ? Number(NAMESPACE_ID)
       : DEFAULT_NAMESPACE_ID;
   } catch (err) {
     API_NAMESPACE_ID = DEFAULT_NAMESPACE_ID;
   }
 }
 
-type UnaryMethodResponseType<TMethod> = TMethod extends UnaryMethodDefinition<
-  any,
-  infer TResponse
->
-  ? TResponse
-  : never;
+export const LocationClient = createPromiseClient(
+  LocationService,
+  createConnectTransport({
+    baseUrl: API_URL,
+  })
+);
 
-export function grpcUnaryRequest<
-  TRequest extends ProtobufMessage,
-  TResponse extends ProtobufMessage,
-  TMethod extends UnaryMethodDefinition<TRequest, TResponse>
->(
-  methodDescriptor: TMethod,
-  request: ProtobufMessage
-): Promise<UnaryMethodResponseType<TMethod>> {
-  return new Promise((resolve, reject) => {
-    grpc.unary(methodDescriptor, {
-      request,
-      host: API_URL,
-      onEnd: (response) => {
-        if (response.status !== grpc.Code.OK) {
-          return reject(response.statusMessage);
-        }
-
-        return resolve(response.message as UnaryMethodResponseType<TMethod>);
-      },
-    });
-  });
-}
+export const DeploymentClient = createPromiseClient(
+  DeploymentService,
+  createConnectTransport({
+    baseUrl: API_URL,
+  })
+);

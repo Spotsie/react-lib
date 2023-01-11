@@ -1,18 +1,19 @@
 import { ReactNode } from 'react';
 import React from 'react';
-import { Zone } from 'proto-all-js/deployment/organization_pb';
+import { Zone } from 'proto/deployment/v1/organization_pb';
 // import * as timelineDataJson from './timelineData.json';
 // import * as zoneData from './zoneData.json';
-import { LocationHistory } from 'proto-all-js/location/service_pb';
-import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
+import { LocationHistory } from 'proto/location/v1/service_pb';
+import { LocationHistoryRecord } from 'proto/location/v1/location_pb';
+import { PlainMessage } from '@bufbuild/protobuf';
 
 // const timelineData: Array<[number, LocationHistory.AsObject]> = (
 //   timelineDataJson as any
 // ).default;
-const timelineData: Array<[number, LocationHistory.AsObject]> = [];
+const timelineData: Array<[number, PlainMessage<LocationHistory>]> = [];
 
 // export const zoneIds: Zone.AsObject[] = (zoneData as any).default;
-export const zoneIds: Zone.AsObject[] = [];
+export const zoneIds: PlainMessage<Zone>[] = [];
 
 export const colors: string[] = [
   '#f6ad55',
@@ -58,12 +59,12 @@ export const getTimelineData = (timeFrame: {
   start: number;
   end: number;
 }): {
-  [id: number]: LocationHistoryRecord.AsObject[];
+  [id: number]: PlainMessage<LocationHistoryRecord>[];
 } =>
   timelineData.reduce(
-    (obj, [subjectId, { recordsList }]) => ({
+    (obj, [subjectId, { records }]) => ({
       ...obj,
-      [subjectId]: recordsList.filter(
+      [subjectId]: records.filter(
         ({ fromTime, toTime }) =>
           fromTime &&
           toTime &&

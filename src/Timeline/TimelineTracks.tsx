@@ -1,5 +1,5 @@
 import { MeshProps, useThree } from '@react-three/fiber';
-import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
+import { LocationHistoryRecord } from 'proto/location/v1/location_pb';
 import React, { useState } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import { BufferGeometry, Color, Vector2, Vector3 } from 'three';
@@ -12,6 +12,7 @@ import {
 } from 'three-mesh-bvh';
 import { motion } from 'framer-motion-3d';
 import { TimelineTrackProps } from './types';
+import { PlainMessage } from '@bufbuild/protobuf';
 
 const TimelineTracks = ({
   locationRecords,
@@ -81,7 +82,7 @@ const TimelineTracks = ({
     );
 
     Object.entries(locationRecords).forEach(([_, locationRecords], index) => {
-      const records = locationRecords as LocationHistoryRecord.AsObject[];
+      const records = locationRecords as PlainMessage<LocationHistoryRecord>[];
 
       records.forEach((record) => {
         const trackBottom =
@@ -95,8 +96,8 @@ const TimelineTracks = ({
           return;
         }
 
-        const trackLeft = record.fromTime.seconds - initialTrackXPos;
-        const trackRight = record.toTime.seconds - initialTrackXPos;
+        const trackLeft = Number(record.fromTime.seconds) - initialTrackXPos;
+        const trackRight = Number(record.toTime.seconds) - initialTrackXPos;
 
         const geo = getBufferGeometryFromPoints(
           trackLeft,

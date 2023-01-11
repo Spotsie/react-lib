@@ -1,9 +1,11 @@
-import { Zone } from 'proto-all-js/deployment/organization_pb';
+import { Zone } from 'proto/deployment/v1/organization_pb';
 import { EntityMap, entityObjectToArray } from '../utils/arrObjConversion';
 import RootState from '../utils/RootState';
+import { PlainMessage } from '@bufbuild/protobuf';
 
-export const selectAllZones = (state: RootState): EntityMap<Zone.AsObject> =>
-  state.zone.zones;
+export const selectAllZones = (
+  state: RootState
+): EntityMap<PlainMessage<Zone>> => state.zone.zones;
 export const selectAllZonesArray = (state: RootState) =>
   entityObjectToArray(state.zone.zones);
 

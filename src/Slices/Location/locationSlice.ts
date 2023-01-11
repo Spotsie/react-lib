@@ -1,15 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { EntityMap } from '../utils/arrObjConversion';
 import { getLocationRecords } from './locationReducers';
-import { LocationHistoryRecord } from 'proto-all-js/location/location_pb';
+import { LocationHistoryRecord } from 'proto/location/v1/location_pb';
 import {
   mergeOverlappingDateRanges,
   sortLocationHistoryRecords,
 } from '../utils/cache';
 import { Interval } from '../utils/cache';
+import { PlainMessage } from '@bufbuild/protobuf';
 
 export interface LocationState {
-  locationRecords: EntityMap<LocationHistoryRecord.AsObject[]>;
+  locationRecords: EntityMap<PlainMessage<LocationHistoryRecord>[]>;
   cache: EntityMap<Interval[]>;
 
   loading: boolean;
@@ -35,18 +36,18 @@ const locationSlice = createSlice({
       })
       .addCase(getLocationRecords.fulfilled, (state, { payload }) => {
         payload.forEach(({ map, range }) => {
-          map.forEach(([id, { recordsList }]) => {
+          Object.entries(map).forEach(([id, { records }]) => {
             const subjectId = +id;
 
             if (
               !state.locationRecords[subjectId] ||
               state.locationRecords[subjectId].length === 0
             ) {
-              state.locationRecords[subjectId] = recordsList;
+              state.locationRecords[subjectId] = records;
             } else {
               const combined = [
                 ...state.locationRecords[subjectId],
-                ...recordsList,
+                ...records,
               ];
 
               const sorted = sortLocationHistoryRecords(combined);

@@ -1,22 +1,20 @@
+import { PlainMessage } from '@bufbuild/protobuf';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Zone } from 'proto-all-js/deployment/organization_pb';
-import { GetZonesRequest } from 'proto-all-js/deployment/service_pb';
-import { DeploymentApi } from 'proto-all-js/deployment/service_pb_service';
-import { API_ORGANIZATION_ID, grpcUnaryRequest } from '../utils/grpc';
+import { Zone } from 'proto/deployment/v1/organization_pb';
+import { API_ORGANIZATION_ID, DeploymentClient } from '../utils/grpc';
 
 export const getAllZones = createAsyncThunk<
-  Zone.AsObject[],
+  PlainMessage<Zone>[],
   void,
   { rejectValue: string }
 >('zone/getAll', async (_, thunkAPI) => {
   try {
-    const req = new GetZonesRequest();
+    // @ts-ignore
+    const response = await DeploymentClient.getZones({
+      organizationId: API_ORGANIZATION_ID,
+    });
 
-    req.setOrganizationId(API_ORGANIZATION_ID);
-
-    const response = await grpcUnaryRequest(DeploymentApi.GetZones, req);
-
-    return response.toObject().zonesList;
+    return response.zones;
   } catch (err) {
     return thunkAPI.rejectWithValue((err as any).msg);
   }
