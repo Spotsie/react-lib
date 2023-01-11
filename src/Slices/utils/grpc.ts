@@ -2,7 +2,7 @@ import { grpc } from '@improbable-eng/grpc-web';
 import { ProtobufMessage } from '@improbable-eng/grpc-web/dist/typings/message';
 import { UnaryMethodDefinition } from '@improbable-eng/grpc-web/dist/typings/service';
 
-const DEFAULT_API_URL = 'https://staging.spotsie.cloud';
+const DEFAULT_API_URL = 'https://api.spotsie.dev';
 export let API_URL = DEFAULT_API_URL;
 
 try {
