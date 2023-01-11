@@ -1,3 +1,4 @@
+import { PlainMessage } from '@bufbuild/protobuf';
 import { Zone } from 'proto/deployment/v1/organization_pb';
 import {
   BBox,
@@ -31,7 +32,9 @@ const setZoneFeatureProperties = (
 
 const emptyFeatureCollection: Feature[] = [];
 
-export const newFeatureCollectionFromZones = (zones: Zone[]): MapFeature[] =>
+export const newFeatureCollectionFromZones = (
+  zones: PlainMessage<Zone>[]
+): MapFeature[] =>
   zones
     .map((zone) => {
       const fc: MapFeature[] = zone.config?.geoJson
