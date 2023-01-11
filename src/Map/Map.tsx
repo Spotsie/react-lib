@@ -6,7 +6,6 @@ import ReactMapGL, {
   ScaleControl,
   MapProps as MapboxProps,
 } from 'react-map-gl';
-import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import RasterLayer from './Layers/RasterLayer';
@@ -15,11 +14,6 @@ import HeatmapLayer from './Layers/HeatmapLayer';
 import ZoneExtrusionLayer from './Layers/ZoneExtrusionLayer';
 import ZoneLayer from './Layers/ZoneLayer';
 import ApproximationLayer from './Layers/ApproximationLayer';
-
-// The following is required to stop "npm build" from transpiling mapbox code
-// @ts-ignore
-mapboxgl.workerClass =
-  require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 export const mapThemes = {
   light: 'mapbox://styles/mapbox/light-v10',
