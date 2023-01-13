@@ -1,7 +1,7 @@
 import { PlainMessage } from '@bufbuild/protobuf';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Zone } from 'proto/deployment/v1/organization_pb';
-import { API_ORGANIZATION_ID, DeploymentClient } from '../utils/grpc';
+import { API_ORGANIZATION_ID, DeploymentClient, headers } from '../utils/grpc';
 
 export const getAllZones = createAsyncThunk<
   PlainMessage<Zone>[],
@@ -10,9 +10,14 @@ export const getAllZones = createAsyncThunk<
 >('zone/getAll', async (_, thunkAPI) => {
   try {
     // @ts-ignore
-    const response = await DeploymentClient.getZones({
-      organizationId: API_ORGANIZATION_ID,
-    });
+    const response = await DeploymentClient.getZones(
+      {
+        organizationId: API_ORGANIZATION_ID,
+      },
+      {
+        headers,
+      }
+    );
 
     return response.zones;
   } catch (err) {

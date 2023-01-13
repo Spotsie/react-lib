@@ -7,7 +7,7 @@ import {
   LocationHistory,
 } from 'proto/location/v1/service_pb';
 import { getQueryRange, Interval } from '../utils/cache';
-import { API_NAMESPACE_ID, LocationClient } from '../utils/grpc';
+import { API_NAMESPACE_ID, headers, LocationClient } from '../utils/grpc';
 import RootState from '../utils/RootState';
 
 interface GetLocationRecordsRequest {
@@ -99,7 +99,9 @@ const formGrpcRequests = (
     return new Promise<GetLocationRecordsResponse>(async (resolve, reject) => {
       try {
         //@ts-ignore
-        const response = await LocationClient.getLocationHistory(request);
+        const response = await LocationClient.getLocationHistory(request, {
+          headers,
+        });
         const { subjectLocationHistory } = response;
         const { fromTime, toTime } = {
           fromTime: Number(request.fromTime?.seconds),
