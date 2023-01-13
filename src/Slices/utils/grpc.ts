@@ -11,8 +11,8 @@ export let API_URL = DEFAULT_API_URL;
 
 try {
   API_URL =
-    process.env.REACT_APP_SPOTSIE_CLOUD_URL ??
-    process.env.SPOTSIE_CLOUD_URL ??
+    import.meta.SPOTSIE_CLOUD_URL ??
+    import.meta.SPOTSIE_CLOUD_URL ??
     DEFAULT_API_URL;
 } catch (error) {
   // if the process is not defined, check for webpack's DefinePlugin variable
@@ -27,10 +27,10 @@ const DEFAULT_ORGANIZATION_ID = 1;
 export let API_ORGANIZATION_ID = DEFAULT_ORGANIZATION_ID;
 
 try {
-  API_ORGANIZATION_ID = !isNaN(Number(process.env.REACT_APP_ORGANIZATION_ID))
-    ? Number(process.env.REACT_APP_ORGANIZATION_ID)
-    : !isNaN(Number(process.env.ORGANIZATION_ID))
-    ? Number(process.env.ORGANIZATION_ID)
+  API_ORGANIZATION_ID = !isNaN(Number(import.meta.ORGANIZATION_ID))
+    ? Number(import.meta.ORGANIZATION_ID)
+    : !isNaN(Number(import.meta.ORGANIZATION_ID))
+    ? Number(import.meta.ORGANIZATION_ID)
     : DEFAULT_ORGANIZATION_ID;
 } catch (error) {
   // if the process is not defined, check for webpack's DefinePlugin variable
@@ -47,16 +47,16 @@ const DEFAULT_NAMESPACE_ID = 1;
 export let API_NAMESPACE_ID = DEFAULT_NAMESPACE_ID;
 
 try {
-  API_NAMESPACE_ID = !isNaN(Number(process.env.REACT_APP_NAMESPACE_ID))
-    ? Number(process.env.REACT_APP_NAMESPACE_ID)
-    : !isNaN(Number(process.env.NAMESPACE_ID))
-    ? Number(process.env.NAMESPACE_ID)
+  API_NAMESPACE_ID = !isNaN(Number(import.meta.NAMESPACE_ID))
+    ? Number(import.meta.NAMESPACE_ID)
+    : !isNaN(Number(import.meta.NAMESPACE_ID))
+    ? Number(import.meta.NAMESPACE_ID)
     : DEFAULT_NAMESPACE_ID;
 } catch (error) {
   // if the process is not defined, check for webpack's DefinePlugin variable
   try {
-    API_NAMESPACE_ID = !isNaN(Number(REACT_APP_NAMESPACE_ID))
-      ? Number(REACT_APP_NAMESPACE_ID)
+    API_NAMESPACE_ID = !isNaN(Number(NAMESPACE_ID))
+      ? Number(NAMESPACE_ID)
       : !isNaN(Number(NAMESPACE_ID))
       ? Number(NAMESPACE_ID)
       : DEFAULT_NAMESPACE_ID;
@@ -65,11 +65,30 @@ try {
   }
 }
 
+const DEFAULT_SPOTSIE_JWT = '';
+export let API_SPOTSIE_JWT = DEFAULT_SPOTSIE_JWT;
+
+try {
+  API_SPOTSIE_JWT = !isNaN(Number(import.meta.SPOTSIE_JWT))
+    ? Number(import.meta.SPOTSIE_JWT)
+    : !isNaN(Number(import.meta.SPOTSIE_JWT))
+    ? Number(import.meta.SPOTSIE_JWT)
+    : DEFAULT_SPOTSIE_JWT;
+} catch (error) {
+  // if the process is not defined, check for webpack's DefinePlugin variable
+  try {
+    API_SPOTSIE_JWT = !isNaN(Number(SPOTSIE_JWT))
+      ? Number(SPOTSIE_JWT)
+      : !isNaN(Number(SPOTSIE_JWT))
+      ? Number(SPOTSIE_JWT)
+      : DEFAULT_SPOTSIE_JWT;
+  } catch (err) {
+    API_SPOTSIE_JWT = DEFAULT_SPOTSIE_JWT;
+  }
+}
+
 export const headers = new Headers();
-headers.set(
-  'Authorization',
-  'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Nwb3RzaWUuaW8iLCJ1cG4iOiJhZG1pbkBsb2NhbGhvc3QiLCJzdWIiOiJhZG1pbiIsImdyb3VwcyI6WyJST0xFX1VTRVIiLCJST0xFX0FETUlOIl0sImlhdCI6MTY3MzYwMTIyMSwiZXhwIjoxNjczNjg3NjIxLCJhdXRoIjoiUk9MRV9VU0VSLCBST0xFX0FETUlOIiwianRpIjoiYTY4ODFmN2YtOTMzZS00ZjFkLWE5ZjYtNjcyODQxM2ZjOGY0In0.REsEo3nSL893D6_9ydXtQ-KEZZR9nUMtgCpg9ABiK8pVOgPTVuVmCYUxGPHpSHYEt3Vg-u6ovEsO6O97j-oZrtBvnVKilH50CbO5W6y5U3B0Ivpa8JQWOCtebwrrsVjrh0D_G2Qt7NslZv6d8kJpRneofUu43FLgG--W8zpVqWNOaVPmPoQPnFIriA0lLe_2FQGUvZrn8PLkO7_ErXoPoI_LUO3peak7TlJ7g8HTzC6dsk1rnQxsulU_4lckJs0_TOLfzGU1dLbuW6tfELgFjFbgkGe44WhkRqryKgbA294ByBkz5boTx3xo_7iVfidTAt_0ezPa41qdXN-7BFzGrg'
-);
+headers.set('Authorization', `Bearer ${API_SPOTSIE_JWT}`);
 
 export const LocationClient = createPromiseClient(
   LocationService,
