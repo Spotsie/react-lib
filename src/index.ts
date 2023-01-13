@@ -16,7 +16,7 @@ export * from './Slices/Zone/zoneSelectors';
 export * from './Slices/Zone/zoneSlice';
 
 // GRPC exports
-export { LocationClient } from './Slices/utils/grpc';
+export * from './Slices/utils/grpc';
 
 // Date exports
 export * from './Date/date';
