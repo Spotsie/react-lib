@@ -6,7 +6,7 @@ import {
 import { LocationService } from 'proto/location/v1/service_connectweb';
 import { DeploymentService } from 'proto/deployment/v1/service_connectweb';
 
-const DEFAULT_API_URL = 'https://api.spotsie.dev';
+const DEFAULT_API_URL = 'https://staging.spotsie.cloud';
 export let API_URL = DEFAULT_API_URL;
 
 try {
@@ -24,7 +24,7 @@ try {
   }
 }
 
-const DEFAULT_ORGANIZATION_ID = 1;
+const DEFAULT_ORGANIZATION_ID = 2;
 export let API_ORGANIZATION_ID = DEFAULT_ORGANIZATION_ID;
 
 try {
@@ -48,7 +48,7 @@ try {
   }
 }
 
-const DEFAULT_NAMESPACE_ID = 1;
+const DEFAULT_NAMESPACE_ID = 10001;
 export let API_NAMESPACE_ID = DEFAULT_NAMESPACE_ID;
 
 try {
