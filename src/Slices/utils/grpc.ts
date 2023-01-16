@@ -14,7 +14,7 @@ try {
 } catch (error) {
   // if the process is not defined, check for webpack's DefinePlugin variable
   try {
-    API_URL = import.meta.SPOTSIE_CLOUD_URL ?? DEFAULT_API_URL;
+    API_URL = import.meta.env.SPOTSIE_CLOUD_URL ?? DEFAULT_API_URL;
   } catch (error) {
     try {
       API_URL = SPOTSIE_CLOUD_URL ?? DEFAULT_API_URL;
@@ -33,8 +33,8 @@ try {
     : DEFAULT_ORGANIZATION_ID;
 } catch (error) {
   try {
-    API_ORGANIZATION_ID = !isNaN(Number(import.meta.ORGANIZATION_ID))
-      ? Number(import.meta.ORGANIZATION_ID)
+    API_ORGANIZATION_ID = !isNaN(Number(import.meta.env.ORGANIZATION_ID))
+      ? Number(import.meta.env.ORGANIZATION_ID)
       : DEFAULT_ORGANIZATION_ID;
   } catch (error) {
     // if the process is not defined, check for webpack's DefinePlugin variable
@@ -57,8 +57,8 @@ try {
     : DEFAULT_NAMESPACE_ID;
 } catch (error) {
   try {
-    API_NAMESPACE_ID = !isNaN(Number(import.meta.NAMESPACE_ID))
-      ? Number(import.meta.NAMESPACE_ID)
+    API_NAMESPACE_ID = !isNaN(Number(import.meta.env.NAMESPACE_ID))
+      ? Number(import.meta.env.NAMESPACE_ID)
       : DEFAULT_NAMESPACE_ID;
   } catch (error) {
     // if the process is not defined, check for webpack's DefinePlugin variable
@@ -82,7 +82,7 @@ try {
   API_SPOTSIE_JWT = process.env.SPOTSIE_JWT ?? DEFAULT_SPOTSIE_JWT;
 } catch (error) {
   try {
-    API_SPOTSIE_JWT = import.meta.SPOTSIE_JWT ?? DEFAULT_SPOTSIE_JWT;
+    API_SPOTSIE_JWT = import.meta.env.SPOTSIE_JWT ?? DEFAULT_SPOTSIE_JWT;
   } catch (error) {
     // if the process is not defined, check for webpack's DefinePlugin variable
     try {
