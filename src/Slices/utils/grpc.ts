@@ -6,7 +6,7 @@ import {
 import { LocationService } from 'proto/location/v1/service_connectweb';
 import { DeploymentService } from 'proto/deployment/v1/service_connectweb';
 
-const DEFAULT_API_URL = 'https://staging.spotsie.cloud';
+const DEFAULT_API_URL = 'https://inazgspotsie01.uprava.ina.hr';
 export let API_URL = DEFAULT_API_URL;
 
 try {
