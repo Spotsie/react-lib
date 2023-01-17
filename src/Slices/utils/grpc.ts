@@ -1,5 +1,6 @@
 //@ts-nocheck
 import {
+  createConnectTransport,
   createGrpcWebTransport,
   createPromiseClient,
 } from '@bufbuild/connect-web';
@@ -98,7 +99,7 @@ headers.set('Authorization', `Bearer ${API_SPOTSIE_JWT}`);
 
 export const LocationClient = createPromiseClient(
   LocationService,
-  createGrpcWebTransport({
+  createConnectTransport({
     baseUrl: API_URL,
   })
 );
