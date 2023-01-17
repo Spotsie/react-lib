@@ -99,7 +99,7 @@ headers.set('Authorization', `Bearer ${API_SPOTSIE_JWT}`);
 
 export const LocationClient = createPromiseClient(
   LocationService,
-  createConnectTransport({
+  createGrpcWebTransport({
     baseUrl: API_URL,
   })
 );
