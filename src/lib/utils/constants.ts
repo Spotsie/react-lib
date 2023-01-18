@@ -1,6 +1,6 @@
 // @ts-nocheck
 const DEFAULT_API_URL = "https://grpcweb.staging.spotsie.cloud";
-export let API_URL = DEFAULT_API_URL;
+export let API_URL = import.meta.env.SPOTSIE_CLOUD_URL ?? DEFAULT_API_URL;
 
 try {
   API_URL = process.env.SPOTSIE_CLOUD_URL ?? DEFAULT_API_URL;
