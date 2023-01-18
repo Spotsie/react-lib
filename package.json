@@ -6,7 +6,8 @@
   "main": "./dist/react-lib.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "src/lib"
   ],
   "type": "commonjs",
   "scripts": {
