@@ -1,5 +1,5 @@
 // @ts-nocheck
-const DEFAULT_API_URL = "https://inazgspotsie01.uprava.ina.hr";
+const DEFAULT_API_URL = "https://grpcweb.staging.spotsie.cloud";
 export let API_URL = DEFAULT_API_URL;
 
 try {
