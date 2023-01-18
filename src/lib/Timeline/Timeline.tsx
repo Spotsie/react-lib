@@ -49,7 +49,7 @@ export const Timeline = ({
 
   const meshRef = useRef<Mesh>(null);
 
-  const timeout = useRef<NodeJS.Timeout>();
+  const timeout = useRef<number>();
 
   const [loaded, setLoaded] = useState(false);
 
