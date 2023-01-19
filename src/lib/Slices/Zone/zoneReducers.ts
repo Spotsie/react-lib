@@ -10,7 +10,6 @@ export const getAllZones = createAsyncThunk<
   { rejectValue: string }
 >("zone/getAll", async (_, thunkAPI) => {
   try {
-    // @ts-ignore
     const response = await DeploymentClient.getZones(
       {
         organizationId: API_ORGANIZATION_ID,

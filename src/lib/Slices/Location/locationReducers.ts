@@ -55,7 +55,6 @@ export const getLocationRecords = createAsyncThunk<
             );
           });
 
-          // @ts-ignore
           const subject: PlainMessage<Subject> = {
             id,
             namespace: API_NAMESPACE_ID,
@@ -67,7 +66,6 @@ export const getLocationRecords = createAsyncThunk<
             return;
           }
 
-          // @ts-ignore
           const newRequest: PlainMessage<GetLocationHistoryRequest> = {
             subjects: [subject],
             fromTime: Timestamp.fromDate(range.start),
@@ -99,7 +97,6 @@ const formGrpcRequests = (
   const grpcRequests = requests.map((request) => {
     return new Promise<GetLocationRecordsResponse>(async (resolve, reject) => {
       try {
-        //@ts-ignore
         const response = await LocationClient.getLocationHistory(request, {
           headers,
         });
