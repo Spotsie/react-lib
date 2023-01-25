@@ -44,14 +44,16 @@ export const getLocationRecords = createAsyncThunk<
         queryRange.forEach((range) => {
           const existingRequest = requests.find((req) => {
             const { fromTime, toTime } = req;
+
             if (!fromTime || !toTime) {
               return false;
             }
 
             return (
               Number(fromTime.seconds) ===
-                Math.floor(range.start.getTime() / 1000) &&
-              Number(toTime?.seconds) === Math.floor(range.end.getTime() / 1000)
+                Number(Timestamp.fromDate(range.start).seconds) &&
+              Number(toTime.seconds) ===
+                Number(Timestamp.fromDate(range.end).seconds)
             );
           });
 
