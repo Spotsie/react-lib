@@ -1,5 +1,5 @@
 import { PlainMessage } from "@bufbuild/protobuf";
-import { Zone } from "proto/deployment/v1/organization_pb";
+import { Zone } from "@spotsie/proto/deployment/v1/organization_pb";
 import {
   BBox,
   Feature,

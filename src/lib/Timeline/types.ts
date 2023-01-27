@@ -1,5 +1,5 @@
-import { Zone } from "proto/deployment/v1/organization_pb";
-import { LocationHistoryRecord } from "proto/location/v1/location_pb";
+import { Zone } from "@spotsie/proto/deployment/v1/organization_pb";
+import { LocationHistoryRecord } from "@spotsie/proto/location/v1/location_pb";
 import { CSSProperties, ReactNode } from "react";
 import { PlainMessage } from "@bufbuild/protobuf";
 

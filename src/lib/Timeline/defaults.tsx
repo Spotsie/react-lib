@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
 import React from "react";
-import { Zone } from "proto/deployment/v1/organization_pb";
+import { Zone } from "@spotsie/proto/deployment/v1/organization_pb";
 // import * as timelineDataJson from './timelineData.json';
 // import * as zoneData from './zoneData.json';
-import { LocationHistory } from "proto/location/v1/service_pb";
-import { LocationHistoryRecord } from "proto/location/v1/location_pb";
+import { LocationHistory } from "@spotsie/proto/location/v1/service_pb";
+import { LocationHistoryRecord } from "@spotsie/proto/location/v1/location_pb";
 import { PlainMessage } from "@bufbuild/protobuf";
 
 // const timelineData: Array<[number, LocationHistory.AsObject]> = (

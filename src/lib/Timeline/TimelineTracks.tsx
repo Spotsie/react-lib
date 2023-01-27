@@ -1,5 +1,5 @@
 import { MeshProps, useThree } from "@react-three/fiber";
-import { LocationHistoryRecord } from "proto/location/v1/location_pb";
+import { LocationHistoryRecord } from "@spotsie/proto/location/v1/location_pb";
 import React, { useState } from "react";
 import { useEffect, useMemo, useRef } from "react";
 import { BufferGeometry, Color, Vector2, Vector3 } from "three";

@@ -1,5 +1,5 @@
 import { areIntervalsOverlapping } from "date-fns";
-import { LocationHistoryRecord } from "proto/location/v1/location_pb";
+import { LocationHistoryRecord } from "@spotsie/proto/location/v1/location_pb";
 import { PlainMessage } from "@bufbuild/protobuf";
 
 export interface Interval {

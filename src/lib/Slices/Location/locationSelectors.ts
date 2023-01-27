@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { EntityMap } from "../utils/arrObjConversion";
-import { LocationHistoryRecord } from "proto/location/v1/location_pb";
+import { LocationHistoryRecord } from "@spotsie/proto/location/v1/location_pb";
 import RootState from "../utils/RootState";
 import { Interval } from "../utils/cache";
 import { PlainMessage } from "@bufbuild/protobuf";

@@ -1,6 +1,6 @@
 import { PlainMessage } from "@bufbuild/protobuf";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { Zone } from "proto/deployment/v1/organization_pb";
+import { Zone } from "@spotsie/proto/deployment/v1/organization_pb";
 import { API_ORGANIZATION_ID } from "../../utils/constants";
 import { DeploymentClient, headers } from "../utils/grpc";
 

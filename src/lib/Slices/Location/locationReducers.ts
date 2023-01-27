@@ -1,11 +1,11 @@
 import { Timestamp } from "@bufbuild/protobuf";
 import { PlainMessage } from "@bufbuild/protobuf";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { Subject } from "proto/domain/v1/domain_pb";
+import { Subject } from "@spotsie/proto/domain/v1/domain_pb";
 import {
   GetLocationHistoryRequest,
   LocationHistory,
-} from "proto/location/v1/service_pb";
+} from "@spotsie/proto/location/v1/service_pb";
 import { API_NAMESPACE_ID } from "../../utils/constants";
 import { getQueryRange, Interval } from "../utils/cache";
 import { headers, LocationClient } from "../utils/grpc";

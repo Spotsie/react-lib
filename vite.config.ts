@@ -25,5 +25,4 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
-  optimizeDeps: { exclude: ["@bufbuild/connect-query"] },
 });

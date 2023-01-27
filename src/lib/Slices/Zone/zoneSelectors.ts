@@ -1,4 +1,4 @@
-import { Zone } from "proto/deployment/v1/organization_pb";
+import { Zone } from "@spotsie/proto/deployment/v1/organization_pb";
 import { EntityMap, entityObjectToArray } from "../utils/arrObjConversion";
 import RootState from "../utils/RootState";
 import { PlainMessage } from "@bufbuild/protobuf";

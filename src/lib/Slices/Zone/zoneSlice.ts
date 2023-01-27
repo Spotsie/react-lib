@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { entityArrayToObject, EntityMap } from "../utils/arrObjConversion";
-import { Zone } from "proto/deployment/v1/organization_pb";
+import { Zone } from "@spotsie/proto/deployment/v1/organization_pb";
 import { getAllZones } from "./zoneReducers";
 import { PlainMessage } from "@bufbuild/protobuf";
 
