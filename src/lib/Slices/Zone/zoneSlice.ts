@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, Reducer } from "@reduxjs/toolkit";
 import { entityArrayToObject, EntityMap } from "../utils/arrObjConversion";
 import { Zone } from "@spotsie/proto/deployment/v1/organization_pb";
 import { getAllZones } from "./zoneReducers";
@@ -37,4 +37,4 @@ const zoneSlice = createSlice({
       }),
 });
 
-export const zoneReducer = zoneSlice.reducer;
+export const zoneReducer = zoneSlice.reducer as Reducer<typeof initialState>;

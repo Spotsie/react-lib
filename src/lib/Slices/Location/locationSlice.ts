@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, Reducer } from "@reduxjs/toolkit";
 import { EntityMap } from "../utils/arrObjConversion";
 import { getLocationRecords } from "./locationReducers";
 import { LocationHistoryRecord } from "@spotsie/proto/location/v1/location_pb";
@@ -76,4 +76,6 @@ const locationSlice = createSlice({
       }),
 });
 
-export const locationReducer = locationSlice.reducer;
+export const locationReducer = locationSlice.reducer as Reducer<
+  typeof initialState
+>;

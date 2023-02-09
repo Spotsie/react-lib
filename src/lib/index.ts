@@ -15,14 +15,10 @@ export * from "./Slices/Zone/zoneReducers";
 export * from "./Slices/Zone/zoneSelectors";
 export * from "./Slices/Zone/zoneSlice";
 
-// GRPC exports
-export * from "./Slices/utils/grpc";
+export * from "./Slices/utils/store";
 
 // Date exports
 export * from "./Date/date";
 export * from "./Date/duration";
 export * from "./Date/format";
 export * from "./Date/types";
-
-// Constants
-export * from "./utils/constants";

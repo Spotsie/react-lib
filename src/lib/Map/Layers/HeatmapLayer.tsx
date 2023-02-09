@@ -11,19 +11,6 @@ import { MapMode } from "../Map";
 
 const MAX_ZOOM_LEVEL = 21;
 
-/*
-0,
-'rgba(172,38,38,0)',
-0.1,
-'rgba(11,243,123,0.57)',
-0.4,
-'rgb(69,241,187)',
-0.6,
-'rgb(17,236,141)',
-1,
-'rgb(17,116,236)'
-*/
-
 const sourceProps: SourceProps & GeoJSONSourceRaw = {
   id: "heatmap-source",
   type: "geojson",

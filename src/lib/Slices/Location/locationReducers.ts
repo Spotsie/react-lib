@@ -1,15 +1,17 @@
+import { PromiseClient } from "@bufbuild/connect-web";
 import { Timestamp } from "@bufbuild/protobuf";
 import { PlainMessage } from "@bufbuild/protobuf";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Subject } from "@spotsie/proto/domain/v1/domain_pb";
+import { LocationService } from "@spotsie/proto/location/v1/service_connectweb";
 import {
+  GetLatestSubjectLocationRequest,
+  GetLatestSubjectLocationResponse,
   GetLocationHistoryRequest,
   LocationHistory,
 } from "@spotsie/proto/location/v1/service_pb";
-import { API_NAMESPACE_ID } from "../../utils/constants";
 import { getQueryRange, Interval } from "../utils/cache";
-import { headers, LocationClient } from "../utils/grpc";
-import RootState from "../utils/RootState";
+import { ThunkAPI } from "../utils/store";
 
 interface GetLocationRecordsRequest {
   ids: number[];
@@ -24,7 +26,7 @@ interface GetLocationRecordsResponse {
 export const getLocationRecords = createAsyncThunk<
   GetLocationRecordsResponse[],
   GetLocationRecordsRequest,
-  { rejectValue: string; state: RootState }
+  ThunkAPI
 >("location/getRecords", async (params, thunkAPI) => {
   const { ids, timeFrame } = params;
 
@@ -59,7 +61,7 @@ export const getLocationRecords = createAsyncThunk<
 
           const subject: PlainMessage<Subject> = {
             id,
-            namespace: API_NAMESPACE_ID,
+            namespace: thunkAPI.extra.constants.namespaceId,
           };
 
           if (existingRequest) {
@@ -83,7 +85,10 @@ export const getLocationRecords = createAsyncThunk<
       return [];
     }
 
-    const grpcRequests = formGrpcRequests(requests);
+    const grpcRequests = formGrpcRequests(
+      requests,
+      thunkAPI.extra.LocationClient
+    );
 
     const grpcResponses = await Promise.all(grpcRequests);
 
@@ -93,15 +98,29 @@ export const getLocationRecords = createAsyncThunk<
   }
 });
 
+export const getLatestSubjectLocation = createAsyncThunk<
+  GetLatestSubjectLocationResponse,
+  GetLatestSubjectLocationRequest,
+  ThunkAPI
+>("location/getLatestSubjectLocation", async (request, thunkApi) => {
+  try {
+    const response =
+      await thunkApi.extra.LocationClient.getLatestSubjectLocation(request);
+
+    return response;
+  } catch (err) {
+    return thunkApi.rejectWithValue(err as any);
+  }
+});
+
 const formGrpcRequests = (
-  requests: PlainMessage<GetLocationHistoryRequest>[]
+  requests: PlainMessage<GetLocationHistoryRequest>[],
+  LocationClient: PromiseClient<typeof LocationService>
 ) => {
   const grpcRequests = requests.map((request) => {
     return new Promise<GetLocationRecordsResponse>(async (resolve, reject) => {
       try {
-        const response = await LocationClient.getLocationHistory(request, {
-          headers,
-        });
+        const response = await LocationClient.getLocationHistory(request);
         const { subjectLocationHistory } = response;
         const { fromTime, toTime } = {
           fromTime: Number(request.fromTime?.seconds),
