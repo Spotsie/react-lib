@@ -23,9 +23,15 @@ export type ReactLibConstants = {
   spotsieJwt: string;
 };
 
+export type ExtraThunkArgs = {
+  constants: ReactLibConstants;
+  LocationClient: PromiseClient<typeof LocationService>;
+  DeploymentClient: PromiseClient<typeof DeploymentService>;
+};
+
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-export type ThunkAppDispatch = ThunkDispatch<RootState, void, Action>;
+export type ThunkAppDispatch = ThunkDispatch<RootState, ExtraThunkArgs, Action>;
 export const useAppDispatch = () => useDispatch<ThunkAppDispatch>();
 
 const reactLibReducers = {
@@ -88,10 +94,6 @@ export type RootState = ReturnType<ReturnType<typeof getStore>["getState"]>;
 
 export type ThunkAPI = {
   rejectValue: string;
-  extra: {
-    constants: ReactLibConstants;
-    LocationClient: PromiseClient<typeof LocationService>;
-    DeploymentClient: PromiseClient<typeof DeploymentService>;
-  };
+  extra: ExtraThunkArgs;
   state: RootState;
 };
