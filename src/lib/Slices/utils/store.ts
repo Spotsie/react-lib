@@ -10,7 +10,14 @@ import {
   ThunkDispatch,
   AnyAction,
   ReducersMapObject,
+  Middleware,
+  Reducer,
+  StoreEnhancer,
+  ConfigureStoreOptions,
+  ImmutableStateInvariantMiddlewareOptions,
+  SerializableStateInvariantMiddlewareOptions,
 } from "@reduxjs/toolkit";
+import { ThunkMiddlewareFor } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 import { DeploymentService } from "@spotsie/proto/deployment/v1/service_connectweb";
 import { LocationService } from "@spotsie/proto/location/v1/service_connectweb";
 import { TypedUseSelectorHook, useSelector, useDispatch } from "react-redux";
@@ -38,9 +45,25 @@ const reactLibReducers = {
   zone: zoneReducer,
 };
 
-export const getStore = <S, A extends AnyAction>(
+export const getStore = <
+  S = any,
+  A extends Action = AnyAction,
+  M extends ReadonlyArray<Middleware<{}, S>> = [ThunkMiddlewareFor<S>],
+  E extends ReadonlyArray<StoreEnhancer> = [StoreEnhancer]
+>(
   reducers: ReducersMapObject<S, A>,
-  constants: ReactLibConstants
+  constants: ReactLibConstants,
+  storeArgs: Omit<
+    ConfigureStoreOptions<S, A, M, E>,
+    "reducer" | "middleware"
+  > & {
+    defaultMiddleware?: {
+      thunk?: { extraArgument: any };
+      immutableCheck?: ImmutableStateInvariantMiddlewareOptions;
+      serializableCheck?: SerializableStateInvariantMiddlewareOptions;
+    };
+    extraMiddleware?: M;
+  } = {}
 ) => {
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${constants.spotsieJwt}`);
@@ -68,24 +91,36 @@ export const getStore = <S, A extends AnyAction>(
     })
   );
 
-  const combinedReducer = combineReducers({
-    ...reducers,
+  const allReducers = {
     ...reactLibReducers,
-  });
+    ...reducers,
+  };
+
+  const combinedReducer = combineReducers(allReducers) as unknown as Reducer<
+    S & typeof reactLibReducers,
+    AnyAction
+  >;
 
   const rootReducer = (state: any, action: AnyAction) =>
     combinedReducer(state, action);
 
   const store = configureStore({
     reducer: rootReducer,
-    devTools: true,
+    devTools: storeArgs.devTools ?? true,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         thunk: {
-          extraArgument: { ...constants, LocationClient, DeploymentClient },
+          extraArgument: {
+            ...constants,
+            LocationClient,
+            DeploymentClient,
+            ...storeArgs.defaultMiddleware?.thunk?.extraArgument,
+          },
         },
-        serializableCheck: false,
-      }),
+        serializableCheck:
+          storeArgs.defaultMiddleware?.serializableCheck ?? false,
+        immutableCheck: storeArgs.defaultMiddleware?.immutableCheck ?? true,
+      }).concat(...storeArgs.extraMiddleware),
   });
 
   return store;
