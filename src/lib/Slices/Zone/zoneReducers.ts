@@ -10,7 +10,7 @@ export const getAllZones = createAsyncThunk<
 >("zone/getAll", async (_, thunkApi) => {
   try {
     const response = await thunkApi.extra.DeploymentClient.getZones({
-      organizationId: thunkApi.extra.constants.organizationId,
+      organizationId: thunkApi.extra.organizationId,
     });
 
     return response.zones;

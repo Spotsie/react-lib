@@ -24,10 +24,9 @@ export type ReactLibConstants = {
 };
 
 export type ExtraThunkArgs = {
-  constants: ReactLibConstants;
   LocationClient: PromiseClient<typeof LocationService>;
   DeploymentClient: PromiseClient<typeof DeploymentService>;
-};
+} & ReactLibConstants;
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -82,7 +81,9 @@ export const getStore = <S, A extends AnyAction>(
     devTools: true,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
-        thunk: { extraArgument: constants, LocationClient, DeploymentClient },
+        thunk: {
+          extraArgument: { ...constants, LocationClient, DeploymentClient },
+        },
         serializableCheck: false,
       }),
   });

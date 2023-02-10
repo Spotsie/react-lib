@@ -5,7 +5,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Subject } from "@spotsie/proto/domain/v1/domain_pb";
 import { LocationService } from "@spotsie/proto/location/v1/service_connectweb";
 import {
-  GetLatestSubjectLocationRequest,
   GetLatestSubjectLocationResponse,
   GetLocationHistoryRequest,
   LocationHistory,
@@ -19,7 +18,7 @@ interface GetLocationRecordsRequest {
 }
 
 interface GetLocationRecordsResponse {
-  map: { [key: number]: LocationHistory };
+  map: { [key: number]: PlainMessage<LocationHistory> };
   range: Interval;
 }
 
@@ -61,7 +60,7 @@ export const getLocationRecords = createAsyncThunk<
 
           const subject: PlainMessage<Subject> = {
             id,
-            namespace: thunkAPI.extra.constants.namespaceId,
+            namespace: thunkAPI.extra.namespaceId,
           };
 
           if (existingRequest) {
@@ -98,6 +97,11 @@ export const getLocationRecords = createAsyncThunk<
   }
 });
 
+export type GetLatestSubjectLocationRequest = {
+  subjects: number[];
+  fromTime: Date;
+};
+
 export const getLatestSubjectLocation = createAsyncThunk<
   GetLatestSubjectLocationResponse,
   GetLatestSubjectLocationRequest,
@@ -105,7 +109,12 @@ export const getLatestSubjectLocation = createAsyncThunk<
 >("location/getLatestSubjectLocation", async (request, thunkApi) => {
   try {
     const response =
-      await thunkApi.extra.LocationClient.getLatestSubjectLocation(request);
+      await thunkApi.extra.LocationClient.getLatestSubjectLocation({
+        subjects: request.subjects.map((id) => ({
+          id,
+          namespace: thunkApi.extra.namespaceId,
+        })),
+      });
 
     return response;
   } catch (err) {
