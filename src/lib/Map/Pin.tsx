@@ -76,7 +76,7 @@ const Pin = ({
           setPopupShow(element);
         }}
       >
-        <Icon style={pinStyle} size={32} color={color} />
+        <span />
       </Marker>
     </>
   );

@@ -18,7 +18,7 @@ const layerProps: LayerProps = {
   id: "approximation-layer",
   type: "circle",
   paint: {
-    "circle-color": "#add8e6",
+    "circle-color": "#e00e0e",
     "circle-opacity": 0.3,
     "circle-radius": {
       stops: [
@@ -28,7 +28,7 @@ const layerProps: LayerProps = {
       base: 2,
     },
     "circle-stroke-width": 2,
-    "circle-stroke-color": "#2e7e98",
+    "circle-stroke-color": "#ffef0b",
   },
 };
 
