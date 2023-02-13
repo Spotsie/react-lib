@@ -21,7 +21,7 @@ import { ThunkMiddlewareFor } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 import { DeploymentService } from "@spotsie/proto/deployment/v1/service_connectweb";
 import { LocationService } from "@spotsie/proto/location/v1/service_connectweb";
 import { TypedUseSelectorHook, useSelector, useDispatch } from "react-redux";
-import { zoneReducer, locationReducer } from "../..";
+import { zoneReducer, locationReducer, LocationState, ZoneState } from "../..";
 
 export type ReactLibConstants = {
   namespaceId: number;
@@ -97,7 +97,7 @@ export const getStore = <
   };
 
   const combinedReducer = combineReducers(allReducers) as unknown as Reducer<
-    S & typeof reactLibReducers,
+    S & { location: LocationState; zone: ZoneState },
     AnyAction
   >;
 
