@@ -33,7 +33,7 @@ const TimelineTracks = ({
     const geometries: BufferGeometry[] = [];
 
     meshRefs.current.forEach((mesh) => {
-      if (!mesh.geometry?.attributes.position) {
+      if (!mesh.geometry || !mesh.geometry.attributes.position) {
         return;
       }
 
@@ -127,6 +127,9 @@ const TimelineTracks = ({
       }
 
       const zone = +zoneId;
+      if (!meshRefs.current[zone]) {
+        return;
+      }
 
       const finalGeo = BufferGeometryUtils.mergeBufferGeometries(geos);
       meshRefs.current[zone].geometry = finalGeo;
