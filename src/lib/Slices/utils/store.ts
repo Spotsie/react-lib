@@ -120,7 +120,7 @@ export const getStore = <
         serializableCheck:
           storeArgs.defaultMiddleware?.serializableCheck ?? false,
         immutableCheck: storeArgs.defaultMiddleware?.immutableCheck ?? true,
-      }).concat(...storeArgs.extraMiddleware),
+      }).concat(...(storeArgs.extraMiddleware ?? [])),
   });
 
   return store;

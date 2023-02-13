@@ -114,6 +114,9 @@ export const getLatestSubjectLocation = createAsyncThunk<
           id,
           namespace: thunkApi.extra.namespaceId,
         })),
+        fromTime: request.fromTime
+          ? Timestamp.fromDate(request.fromTime)
+          : undefined,
       });
 
     return response;
