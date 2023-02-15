@@ -97,7 +97,7 @@ export const getStore = <
         ...interceptors,
         (next) => async (req) => {
           {
-            req.header.set("Authorization", constants.spotsieJwt);
+            req.header.set("Authorization", `Bearer ${constants.spotsieJwt}`);
             const res = await next(req);
             return res;
           }
