@@ -7,6 +7,7 @@ import { LocationService } from "@spotsie/proto/location/v1/service_connectweb";
 import {
   GetLatestSubjectLocationResponse,
   GetLocationHistoryRequest,
+  GetSubjectLocationsAtResponse,
   LocationHistory,
 } from "@spotsie/proto/location/v1/service_pb";
 import { getQueryRange, Interval } from "../utils/cache";
@@ -118,6 +119,23 @@ export const getLatestSubjectLocation = createAsyncThunk<
           ? Timestamp.fromDate(request.fromTime)
           : undefined,
       });
+
+    return response;
+  } catch (err) {
+    return thunkApi.rejectWithValue(err as any);
+  }
+});
+
+export const getSubjectLocationsAt = createAsyncThunk<
+  GetSubjectLocationsAtResponse,
+  { time: Date },
+  ThunkAPI
+>("location/getSubjectLocationsAt", async (request, thunkApi) => {
+  try {
+    const response = await thunkApi.extra.LocationClient.getSubjectLocationsAt({
+      namespace: thunkApi.extra.namespaceId,
+      time: Timestamp.fromDate(request.time),
+    });
 
     return response;
   } catch (err) {
