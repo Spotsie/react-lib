@@ -2,7 +2,6 @@ import {
   createPromiseClient,
   createGrpcWebTransport,
   PromiseClient,
-  Interceptor,
 } from "@bufbuild/connect-web";
 import {
   configureStore,
@@ -80,6 +79,15 @@ export const getStore = <
     DeploymentService,
     createGrpcWebTransport({
       baseUrl: constants.spotsieCloudUrl,
+      interceptors: [
+        (next) => async (req) => {
+          {
+            req.header.set("Authorization", `Bearer ${constants.spotsieJwt}`);
+            const res = await next(req);
+            return res;
+          }
+        },
+      ],
     })
   );
 
