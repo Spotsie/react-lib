@@ -69,23 +69,10 @@ export const getStore = <
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${constants.spotsieJwt}`);
 
-  const interceptors: Interceptor[] =
-    (window as any).__CONNECT_WEB_DEVTOOLS__ !== "undefined"
-      ? [(window as any).__CONNECT_WEB_DEVTOOLS__]
-      : [];
-  // To get around the fact that __CONNECT_WEB_DEVTOOLS__ might not be loaded, we can listen for a custom event,
-  // and then push the interceptor to our array once loaded.
-  window.addEventListener("connect-web-dev-tools-ready", () => {
-    if (typeof (window as any).__CONNECT_WEB_DEVTOOLS__ !== "undefined") {
-      interceptors.push((window as any).__CONNECT_WEB_DEVTOOLS__);
-    }
-  });
-
   const LocationClient = createPromiseClient(
     LocationService,
     createGrpcWebTransport({
       baseUrl: constants.spotsieCloudUrl,
-      interceptors,
     })
   );
 
@@ -93,16 +80,6 @@ export const getStore = <
     DeploymentService,
     createGrpcWebTransport({
       baseUrl: constants.spotsieCloudUrl,
-      interceptors: [
-        ...interceptors,
-        (next) => async (req) => {
-          {
-            req.header.set("Authorization", `Bearer ${constants.spotsieJwt}`);
-            const res = await next(req);
-            return res;
-          }
-        },
-      ],
     })
   );
 
