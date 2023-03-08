@@ -24,6 +24,8 @@ interface Props {
   timeMarkerLabelStyle: CSSProperties;
 
   isDate?: boolean;
+
+  leftMarginInRem: number;
 }
 
 const TIME_MARKER_VERTICAL_POINTS = (xPos: number) => [
@@ -39,6 +41,7 @@ const TimeMarkers = ({
   timeMarkerStyle,
   timeMarkerLabelStyle,
   isDate,
+  leftMarginInRem,
 }: Props) => {
   const meshRef = useRef<Mesh>(null);
   const lineRef = useRef<LineSegments>(null);
@@ -82,7 +85,7 @@ const TimeMarkers = ({
       camera.worldToLocal(new Vector3(xPositions[0])).x -
       camera.worldToLocal(new Vector3(cameraStartPosition)).x -
       childWidth / 2
-    }px + 4rem)`;
+    }px + ${4 + leftMarginInRem}rem)`;
   });
 
   useEffect(() => {
@@ -110,7 +113,7 @@ const TimeMarkers = ({
       document.getElementById(TIMELINE_PARENT_ID)?.appendChild(currDateMarker);
       currDateMarkerRef.current = currDateMarker;
 
-      currDateMarker.style.left = `calc(4rem - ${
+      currDateMarker.style.left = `calc(${4 + leftMarginInRem}rem - ${
         currDateMarker.getBoundingClientRect().width / 2
       }px)`;
     }

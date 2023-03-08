@@ -30,6 +30,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
       zoneIds,
       onScroll,
       style,
+      leftMarginInRem = 0,
       ...props
     }: TimelineProps,
     ref
@@ -68,8 +69,8 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
             <Canvas
               style={{
                 height: "100%",
-                width: "calc(100% - 6rem)",
-                left: "4rem",
+                width: `calc(100% - ${6 + leftMarginInRem / 1.5}rem)`,
+                left: `${4 + leftMarginInRem}rem`,
                 overflow: "hidden",
                 position: "relative",
                 backgroundColor: "#f7fafc",
@@ -100,6 +101,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
                 onClickZone={onClickZone}
                 zoneIds={zoneIds}
                 onScroll={onScroll}
+                leftMarginInRem={leftMarginInRem}
                 {...props}
               />
             </Canvas>

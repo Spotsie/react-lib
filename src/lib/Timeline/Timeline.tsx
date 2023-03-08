@@ -38,6 +38,8 @@ export const Timeline = ({
 
   onClickZone,
   onScroll,
+
+  leftMarginInRem,
 }: TimelineCanvasProps) => {
   const { gl, invalidate } = useThree(({ gl, invalidate }) => ({
     gl,
@@ -106,6 +108,7 @@ export const Timeline = ({
         timeFormat={breakpoint.timeFormat}
         timeMarkerLabelStyle={TIME_MARKER_LABEL_STYLE}
         timeMarkerStyle={TIME_MARKER_STYLE}
+        leftMarginInRem={leftMarginInRem}
       />
     );
   }, [camera.position.x, camera.scale.x, gl.domElement.clientWidth]);
@@ -138,6 +141,7 @@ export const Timeline = ({
         timeMarkerLabelStyle={DATE_MARKER_LABEL_STYLE}
         timeMarkerStyle={DATE_MARKER_STYLE}
         isDate
+        leftMarginInRem={leftMarginInRem}
       />
     );
   }, [camera.position.x, camera.scale.x, gl.domElement.clientWidth]);
@@ -237,7 +241,9 @@ export const Timeline = ({
     const zoneColor = colors[zoneIndex];
 
     tooltipContainer.style.display = "block";
-    tooltipContainer.style.left = `calc(${tooltip.point.x}px + 4rem)`;
+    tooltipContainer.style.left = `calc(${tooltip.point.x}px + ${
+      4 + leftMarginInRem
+    }rem)`;
     tooltipContainer.style.top = `${tooltip.point.y}px`;
     tooltipContainer.style.borderColor = zoneColor;
     tooltipContainer.style.color = zoneColor;

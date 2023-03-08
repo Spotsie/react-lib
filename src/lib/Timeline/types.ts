@@ -36,6 +36,8 @@ export type TimelineProps = {
   onScroll?(timeFrame: { start?: Date; end?: Date }): void;
 
   style?: CSSProperties;
+
+  leftMarginInRem?: number;
 };
 
 export type TimelineCanvasProps = {
@@ -56,6 +58,8 @@ export type TimelineCanvasProps = {
   onClickZone?(zoneId: number): void;
 
   onScroll?(timeFrame: { start?: Date; end?: Date }): void;
+
+  leftMarginInRem: number;
 };
 
 export type TimelineTrackProps = {
