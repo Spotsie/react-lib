@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useEffect, useMemo, useRef } from "react";
 import { BufferGeometry, Color, Vector2, Vector3 } from "three";
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
-import { HOVER_ANIMATION_DELAY, NON_HIGHLIGHTED_COLOR } from "./constants";
+import { HOVER_ANIMATION_DELAY } from "./constants";
 import {
   acceleratedRaycast,
   computeBoundsTree,
@@ -186,6 +186,7 @@ const TimelineTracks = ({
               }
             >
               <motion.meshBasicMaterial
+                transparent={true}
                 onUpdate={() => invalidate()}
                 toneMapped={false}
                 transition={{
@@ -196,7 +197,8 @@ const TimelineTracks = ({
                     color: `#${color.getHexString()}`,
                   },
                   notSelected: {
-                    color: NON_HIGHLIGHTED_COLOR,
+                    color: `#${color.getHexString()}`,
+                    opacity: 0.3,
                   },
                 }}
               />
