@@ -1,7 +1,7 @@
 import React from "react";
-import { Layer, LayerProps, Source, SourceProps } from "react-map-gl";
+import { Layer, LayerProps, Source } from "react-map-gl";
 
-const sourceProps: SourceProps = {
+const sourceProps: any = {
   id: "overlay-source",
   type: "image",
 };

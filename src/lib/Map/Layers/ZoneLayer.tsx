@@ -1,14 +1,8 @@
 import React from "react";
-import {
-  GeoJSONSourceRaw,
-  Layer,
-  LayerProps,
-  Source,
-  SourceProps,
-} from "react-map-gl";
+import { Layer, LayerProps, Source, SourceProps } from "react-map-gl";
 import { FeatureCollection } from "../types";
 
-const sourceProps: SourceProps & GeoJSONSourceRaw = {
+const sourceProps: SourceProps & any = {
   id: "zone-source",
   type: "geojson",
   cluster: false,

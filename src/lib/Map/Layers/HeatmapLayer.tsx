@@ -1,17 +1,11 @@
-import {
-  GeoJSONSourceRaw,
-  Layer,
-  LayerProps,
-  Source,
-  SourceProps,
-} from "react-map-gl";
+import { Layer, LayerProps, Source, SourceProps } from "react-map-gl";
 import React from "react";
 import { FeatureCollection } from "../types";
 import { MapMode } from "../Map";
 
 const MAX_ZOOM_LEVEL = 21;
 
-const sourceProps: SourceProps & GeoJSONSourceRaw = {
+const sourceProps: SourceProps & any = {
   id: "heatmap-source",
   type: "geojson",
 };

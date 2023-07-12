@@ -13,8 +13,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "prepare": "vite build"
+    "preview": "vite preview"
   },
   "prettier": {
     "printWidth": 80,
@@ -45,7 +44,7 @@
     "framer-motion": "^7.6.7",
     "framer-motion-3d": "^7.6.7",
     "mapbox-gl": "^2.9.1",
-    "react-map-gl": "^7.0.16",
+    "react-map-gl": "^7.1.2",
     "react-redux": "^8.0.5",
     "redux": "^4.2.0",
     "three": "^0.144.0",

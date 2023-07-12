@@ -1,19 +1,23 @@
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode, useMemo, useRef, useState } from "react";
 import Pin, { Props as PinProps } from "./Pin";
 import { FeatureCollection, Point } from "./types";
 
 import ReactMapGL, {
-  ScaleControl,
   MapProps as MapboxProps,
+  MapRef,
+  ScaleControl,
+  Popup,
 } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import RasterLayer from "./Layers/RasterLayer";
+import ApproximationIcon from "./ApproximationIcon.svg";
+import { MapMouseEvent, EventData, MapboxGeoJSONFeature } from "mapbox-gl";
+import ApproximationLayer from "./Layers/ApproximationLayer";
 import EvacuationPointLayer from "./Layers/EvacuationPointLayer";
-import HeatmapLayer from "./Layers/HeatmapLayer";
 import ZoneExtrusionLayer from "./Layers/ZoneExtrusionLayer";
 import ZoneLayer from "./Layers/ZoneLayer";
-import ApproximationLayer from "./Layers/ApproximationLayer";
+import RasterLayer from "./Layers/RasterLayer";
+import HeatmapLayer from "./Layers/HeatmapLayer";
 
 export const mapThemes = {
   light: "mapbox://styles/mapbox/light-v10",
@@ -80,6 +84,52 @@ export function Map({
       )),
     [pins]
   );
+  const mapRef = useRef<MapRef>(null);
+
+  const onStyleData = () => {
+    const circleImage = new Image(167, 167);
+
+    circleImage.onload = () => {
+      if (!mapRef.current) {
+        return;
+      }
+
+      if (!mapRef.current.hasImage("circle")) {
+        mapRef.current.addImage("circle", circleImage);
+      }
+    };
+    circleImage.src = ApproximationIcon;
+  };
+
+  const [popup, setPopup] = useState<{
+    coordinates: [number, number];
+    content: ReactNode;
+  } | null>(null);
+
+  const onloadmap = () => {
+    if (!mapRef.current) {
+      return;
+    }
+
+    const fn = (
+      e: MapMouseEvent & {
+        features?: MapboxGeoJSONFeature[] | undefined;
+      } & EventData
+    ) => {
+      e.originalEvent.stopPropagation();
+
+      if (onFeatureClick && e.features?.[0].properties) {
+        const coordinates = (
+          e as any
+        ).features![0].geometry.coordinates.slice();
+
+        const element = onFeatureClick(e.features[0].properties);
+        setPopup({ content: element, coordinates });
+      }
+    };
+
+    mapRef.current.on("click", "approximation-layer", fn);
+  };
 
   return (
     <ReactMapGL
@@ -90,6 +140,9 @@ export function Map({
       }}
       cursor={cursor}
       preserveDrawingBuffer={true}
+      ref={mapRef}
+      onStyleData={onStyleData}
+      onLoad={onloadmap}
       {...props}
     >
       {overlay && (
@@ -100,6 +153,18 @@ export function Map({
         />
       )}
       <ZoneLayer data={zoneFeatureCollection} />
+
+      {popup && (
+        <Popup
+          closeOnClick={false}
+          longitude={popup.coordinates[0]}
+          latitude={popup.coordinates[1]}
+          offset={[0, -20] as [number, number]}
+          onClose={() => setPopup(null)}
+        >
+          {popup.content}
+        </Popup>
+      )}
 
       {mode === "normal" && (
         <>
@@ -113,11 +178,7 @@ export function Map({
         <HeatmapLayer data={subjectFeatureCollection} mode={mode} />
       )}
       {mode === "approximation" && (
-        <ApproximationLayer
-          data={subjectFeatureCollection}
-          popup={onFeatureClick !== undefined}
-          onFeatureClick={onFeatureClick}
-        />
+        <ApproximationLayer data={subjectFeatureCollection} />
       )}
 
       {iconFeatureCollection && (
