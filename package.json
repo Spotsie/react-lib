@@ -1,6 +1,6 @@
 {
   "name": "@spotsie/react-lib",
-  "version": "0.10.18",
+  "version": "0.10.19",
   "license": "MIT",
   "author": "Ante Gulin",
   "main": "./dist/react-lib.js",
@@ -13,7 +13,8 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "vite build"
   },
   "prettier": {
     "printWidth": 80,
