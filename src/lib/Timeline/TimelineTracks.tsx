@@ -157,7 +157,6 @@ const TimelineTracks = ({
         .sort((first, second) => first.id - second.id)
         .map(({ id: zoneId }, index) => {
           let color = new Color(colors[index]);
-          color.convertSRGBToLinear();
 
           return (
             <motion.mesh
