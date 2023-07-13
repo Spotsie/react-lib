@@ -51,6 +51,7 @@ export type MapProps = {
     opacity?: number;
   };
   mode?: MapMode;
+  colors?: Array<string>;
 } & Omit<MapboxProps, "fog" | "terrain" | "mapStyle">;
 
 const scaleControlStyle = {
@@ -70,6 +71,7 @@ export function Map({
   onFeatureClick,
   cursor = "crosshair",
   mode = "normal",
+  colors = ["#366fe0"],
   ...props
 }: MapProps) {
   const pinMarkers = useMemo(
@@ -152,7 +154,7 @@ export function Map({
           opacity={overlay.opacity}
         />
       )}
-      <ZoneLayer data={zoneFeatureCollection} />
+      <ZoneLayer data={zoneFeatureCollection} colors={colors} />
 
       {popup && (
         <Popup

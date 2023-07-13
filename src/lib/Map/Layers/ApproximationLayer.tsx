@@ -14,14 +14,6 @@ const getMetersPerPixel = (latitude: number, zoomLevel: number) => {
 
 const getScaledPixels = (latitude: number, zoomLevel: number, meters: number) =>
   meters / getMetersPerPixel(latitude, zoomLevel);
-console.log(
-  new Array(23)
-    .fill(0)
-    .map((_, zoomLevel) => [
-      zoomLevel,
-      getScaledPixels(46.225422090923665, zoomLevel, 10) / 167,
-    ])
-);
 
 const sourceProps: SourceProps & any = {
   id: "approximation-source",

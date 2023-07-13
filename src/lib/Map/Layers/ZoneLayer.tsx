@@ -8,15 +8,18 @@ const sourceProps: SourceProps & any = {
   cluster: false,
 };
 
-const zoneFillLayerProps: LayerProps = {
+const getZoneFillLayerProps = (colors: Array<string>): LayerProps => ({
   id: "zone-fill-layer",
   beforeId: "zone-population-layer",
   type: "fill",
   paint: {
-    "fill-color": "#366fe0",
+    "fill-color": {
+      property: "index",
+      stops: colors.map((color, index) => [index, color]),
+    } as any,
     "fill-opacity": 0.2,
   },
-};
+});
 
 const zonePopulationLayerProps: LayerProps = {
   id: "zone-population-layer",
@@ -47,12 +50,26 @@ const zonePopulationLayerProps: LayerProps = {
 
 type Props = {
   data: FeatureCollection;
+  colors: Array<string>;
 };
 
-const ZoneLayer = ({ data }: Props) => (
-  <Source data={data} {...sourceProps}>
+const ZoneLayer = ({ data, colors }: Props) => (
+  <Source
+    data={{
+      type: "FeatureCollection",
+      features: data.features.map((f, index) => ({
+        ...f,
+        properties: {
+          ...f.properties,
+          index,
+        },
+      })),
+    }}
+    {...sourceProps}
+  >
+    {console.log(data)}
     <Layer {...zonePopulationLayerProps} />
-    <Layer {...zoneFillLayerProps} />
+    <Layer {...getZoneFillLayerProps(colors)} />
   </Source>
 );
 
