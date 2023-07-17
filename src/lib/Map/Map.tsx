@@ -40,6 +40,7 @@ export type MapProps = {
   children?: ReactNode;
   mapTheme?: keyof typeof mapThemes;
   onFeatureClick?(properties: { [key: string]: any }): ReactNode;
+  onZoneClick?(properties: { [key: string]: any }): ReactNode;
   zoneFeatureCollection: FeatureCollection;
   subjectFeatureCollection: FeatureCollection<Point>;
   iconFeatureCollection?: FeatureCollection;
@@ -69,6 +70,7 @@ export function Map({
   overlay,
   heatmap,
   onFeatureClick,
+  onZoneClick,
   cursor = "crosshair",
   mode = "normal",
   colors = ["#366fe0"],
@@ -113,7 +115,7 @@ export function Map({
       return;
     }
 
-    const fn = (
+    const onClickApproximationLayer = (
       e: MapMouseEvent & {
         features?: MapboxGeoJSONFeature[] | undefined;
       } & EventData
@@ -130,7 +132,22 @@ export function Map({
       }
     };
 
-    mapRef.current.on("click", "approximation-layer", fn);
+    mapRef.current.on(
+      "click",
+      "approximation-layer",
+      onClickApproximationLayer
+    );
+
+    const onClickZoneLayer = (
+      e: MapMouseEvent & {
+        features?: MapboxGeoJSONFeature[] | undefined;
+      } & EventData
+    ) => {
+      if (onZoneClick && e.features?.[0].properties) {
+        onZoneClick(e.features[0].properties);
+      }
+    };
+    mapRef.current.on("click", "zone-fill-layer", onClickZoneLayer);
   };
 
   return (
