@@ -67,7 +67,6 @@ const ZoneLayer = ({ data, colors }: Props) => (
     }}
     {...sourceProps}
   >
-    {console.log(data)}
     <Layer {...zonePopulationLayerProps} />
     <Layer {...getZoneFillLayerProps(colors)} />
   </Source>

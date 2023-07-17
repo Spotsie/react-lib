@@ -18,6 +18,7 @@ import ZoneExtrusionLayer from "./Layers/ZoneExtrusionLayer";
 import ZoneLayer from "./Layers/ZoneLayer";
 import RasterLayer from "./Layers/RasterLayer";
 import HeatmapLayer from "./Layers/HeatmapLayer";
+import { centroid } from "./helpers";
 
 export const mapThemes = {
   light: "mapbox://styles/mapbox/light-v10",
@@ -105,7 +106,7 @@ export function Map({
     circleImage.src = ApproximationIcon;
   };
 
-  const [popup, setPopup] = useState<{
+  const [subjectPopup, setSubjectPopup] = useState<{
     coordinates: [number, number];
     content: ReactNode;
   } | null>(null);
@@ -128,7 +129,7 @@ export function Map({
         ).features![0].geometry.coordinates.slice();
 
         const element = onFeatureClick(e.features[0].properties);
-        setPopup({ content: element, coordinates });
+        setSubjectPopup({ content: element, coordinates });
       }
     };
 
@@ -144,7 +145,11 @@ export function Map({
       } & EventData
     ) => {
       if (onZoneClick && e.features?.[0].properties) {
-        onZoneClick(e.features[0].properties);
+        const coordinates = centroid(e.features[0].geometry).geometry
+          .coordinates as [number, number];
+
+        const element = onZoneClick(e.features[0].properties);
+        setSubjectPopup({ content: element, coordinates });
       }
     };
     mapRef.current.on("click", "zone-fill-layer", onClickZoneLayer);
@@ -173,15 +178,15 @@ export function Map({
       )}
       <ZoneLayer data={zoneFeatureCollection} colors={colors} />
 
-      {popup && (
+      {subjectPopup && (
         <Popup
           closeOnClick={false}
-          longitude={popup.coordinates[0]}
-          latitude={popup.coordinates[1]}
+          longitude={subjectPopup.coordinates[0]}
+          latitude={subjectPopup.coordinates[1]}
           offset={[0, -20] as [number, number]}
-          onClose={() => setPopup(null)}
+          onClose={() => setSubjectPopup(null)}
         >
-          {popup.content}
+          {subjectPopup.content}
         </Popup>
       )}
 
