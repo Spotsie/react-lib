@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Pin, { Props as PinProps } from "./Pin";
 import { FeatureCollection, Point } from "./types";
 
@@ -154,6 +154,45 @@ export function Map({
     };
     mapRef.current.on("click", "zone-fill-layer", onClickZoneLayer);
   };
+
+  const onClickZoneLayerRef = useRef<
+    | ((
+        e: MapMouseEvent & {
+          features?: MapboxGeoJSONFeature[] | undefined;
+        } & EventData
+      ) => void)
+    | null
+  >(null);
+  useEffect(() => {
+    if (!mapRef.current) {
+      return;
+    }
+
+    if (onClickZoneLayerRef.current) {
+      mapRef.current.off(
+        "click",
+        "zone-fill-layer",
+        onClickZoneLayerRef.current
+      );
+    }
+
+    const onClickZoneLayer = (
+      e: MapMouseEvent & {
+        features?: MapboxGeoJSONFeature[] | undefined;
+      } & EventData
+    ) => {
+      if (onZoneClick && e.features?.[0].properties) {
+        const coordinates = centroid(e.features[0].geometry).geometry
+          .coordinates as [number, number];
+
+        const element = onZoneClick(e.features[0].properties);
+        setSubjectPopup({ content: element, coordinates });
+      }
+    };
+    onClickZoneLayerRef.current = onClickZoneLayer;
+
+    mapRef.current.on("click", "zone-fill-layer", onClickZoneLayerRef.current);
+  }, [onZoneClick]);
 
   return (
     <ReactMapGL
