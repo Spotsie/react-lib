@@ -23,7 +23,6 @@ const sourceProps: SourceProps & any = {
 const trackerIdLayerProps: LayerProps = {
   id: "tracker-id-layer",
   type: "symbol",
-
   layout: {
     "text-field": ["format", ["get", "trackerId"]],
     "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],

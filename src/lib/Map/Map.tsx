@@ -106,7 +106,7 @@ export function Map({
     circleImage.src = ApproximationIcon;
   };
 
-  const [subjectPopup, setSubjectPopup] = useState<{
+  const [popup, setPopup] = useState<{
     coordinates: [number, number];
     content: ReactNode;
   } | null>(null);
@@ -116,49 +116,65 @@ export function Map({
       return;
     }
 
-    const onClickApproximationLayer = (
+    if (onClickRef.current) {
+      mapRef.current.off(
+        "click",
+        ["approximation-layer", "zone-fill-layer"],
+        onClickRef.current
+      );
+    }
+
+    const onClickLayer = (
       e: MapMouseEvent & {
         features?: MapboxGeoJSONFeature[] | undefined;
       } & EventData
     ) => {
-      e.originalEvent.stopPropagation();
+      const features = e.features?.[0];
+      if (!features) {
+        return;
+      }
 
-      if (onFeatureClick && e.features?.[0].properties) {
-        const coordinates = (
-          e as any
-        ).features![0].geometry.coordinates.slice();
+      let coordinates: [number, number] = [0, 0];
+      let element: ReactNode = <></>;
 
-        const element = onFeatureClick(e.features[0].properties);
-        setSubjectPopup({ content: element, coordinates });
+      if (features.layer.id === "approximation-layer" && onFeatureClick) {
+        coordinates = (features as any).geometry.coordinates.slice();
+
+        element = onFeatureClick(features.properties ?? {});
+      } else if (features.layer.id === "zone-fill-layer" && onZoneClick) {
+        coordinates = centroid(features.geometry).geometry.coordinates as [
+          number,
+          number
+        ];
+
+        element = onZoneClick(features.properties ?? {});
+      }
+
+      if (
+        popup &&
+        coordinates[0] === popup.coordinates[0] &&
+        coordinates[1] === popup.coordinates[1]
+      ) {
+        setPopup(null);
+      } else {
+        setPopup({ content: element, coordinates });
       }
     };
+    onClickRef.current = onClickLayer;
 
     mapRef.current.on(
       "click",
-      "approximation-layer",
-      onClickApproximationLayer
+      ["approximation-layer", "zone-fill-layer"],
+      onClickRef.current
     );
-
-    const onClickZoneLayer = (
-      e: MapMouseEvent & {
-        features?: MapboxGeoJSONFeature[] | undefined;
-      } & EventData
-    ) => {
-      if (onZoneClick && e.features?.[0].properties) {
-        const coordinates = centroid(e.features[0].geometry).geometry
-          .coordinates as [number, number];
-
-        const element = onZoneClick(e.features[0].properties);
-        setSubjectPopup({ content: element, coordinates });
-      }
-    };
-    mapRef.current.on("click", "zone-fill-layer", onClickZoneLayer);
+    mapRef.current.moveLayer("approximation-layer");
+    mapRef.current.moveLayer("tracker-id-layer");
   };
 
-  const onClickZoneLayerRef = useRef<
+  const onClickRef = useRef<
     | ((
         e: MapMouseEvent & {
-          features?: MapboxGeoJSONFeature[] | undefined;
+          features?: MapboxGeoJSONFeature[];
         } & EventData
       ) => void)
     | null
@@ -168,31 +184,58 @@ export function Map({
       return;
     }
 
-    if (onClickZoneLayerRef.current) {
+    if (onClickRef.current) {
       mapRef.current.off(
         "click",
-        "zone-fill-layer",
-        onClickZoneLayerRef.current
+        ["approximation-layer", "zone-fill-layer"],
+        onClickRef.current
       );
     }
 
-    const onClickZoneLayer = (
+    const onClickLayer = (
       e: MapMouseEvent & {
         features?: MapboxGeoJSONFeature[] | undefined;
       } & EventData
     ) => {
-      if (onZoneClick && e.features?.[0].properties) {
-        const coordinates = centroid(e.features[0].geometry).geometry
-          .coordinates as [number, number];
+      const features = e.features?.[0];
+      if (!features) {
+        return;
+      }
 
-        const element = onZoneClick(e.features[0].properties);
-        setSubjectPopup({ content: element, coordinates });
+      let coordinates: [number, number] = [0, 0];
+      let element: ReactNode = <></>;
+
+      if (features.layer.id === "approximation-layer" && onFeatureClick) {
+        coordinates = (features as any).geometry.coordinates.slice();
+
+        element = onFeatureClick(features.properties ?? {});
+      } else if (features.layer.id === "zone-fill-layer" && onZoneClick) {
+        coordinates = centroid(features.geometry).geometry.coordinates as [
+          number,
+          number
+        ];
+
+        element = onZoneClick(features.properties ?? {});
+      }
+
+      if (
+        popup &&
+        coordinates[0] === popup.coordinates[0] &&
+        coordinates[1] === popup.coordinates[1]
+      ) {
+        setPopup(null);
+      } else {
+        setPopup({ content: element, coordinates });
       }
     };
-    onClickZoneLayerRef.current = onClickZoneLayer;
+    onClickRef.current = onClickLayer;
 
-    mapRef.current.on("click", "zone-fill-layer", onClickZoneLayerRef.current);
-  }, [onZoneClick]);
+    mapRef.current.on(
+      "click",
+      ["approximation-layer", "zone-fill-layer"],
+      onClickRef.current
+    );
+  }, [onZoneClick, popup]);
 
   return (
     <ReactMapGL
@@ -215,17 +258,20 @@ export function Map({
           opacity={overlay.opacity}
         />
       )}
+      {mode === "approximation" && (
+        <ApproximationLayer data={subjectFeatureCollection} />
+      )}
       <ZoneLayer data={zoneFeatureCollection} colors={colors} />
 
-      {subjectPopup && (
+      {popup && (
         <Popup
           closeOnClick={false}
-          longitude={subjectPopup.coordinates[0]}
-          latitude={subjectPopup.coordinates[1]}
+          longitude={popup.coordinates[0]}
+          latitude={popup.coordinates[1]}
           offset={[0, -20] as [number, number]}
-          onClose={() => setSubjectPopup(null)}
+          onClose={() => setPopup(null)}
         >
-          {subjectPopup.content}
+          {popup.content}
         </Popup>
       )}
 
@@ -239,9 +285,6 @@ export function Map({
       )}
       {mode === "heatmap" && (
         <HeatmapLayer data={subjectFeatureCollection} mode={mode} />
-      )}
-      {mode === "approximation" && (
-        <ApproximationLayer data={subjectFeatureCollection} />
       )}
 
       {iconFeatureCollection && (

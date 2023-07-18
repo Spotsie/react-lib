@@ -23,6 +23,7 @@ const getZoneFillLayerProps = (colors: Array<string>): LayerProps => ({
 
 const zonePopulationLayerProps: LayerProps = {
   id: "zone-population-layer",
+  beforeId: "tracker-id-layer",
   type: "symbol",
   layout: {
     "icon-image": "marker-11",
