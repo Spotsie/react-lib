@@ -1,5 +1,4 @@
 import { MeshProps, useThree } from "@react-three/fiber";
-import { LocationHistoryRecord } from "@spotsie/proto/location/v1/location_pb";
 import React, { useState } from "react";
 import { useEffect, useMemo, useRef } from "react";
 import { BufferGeometry, Color, Vector2, Vector3 } from "three";
@@ -12,7 +11,6 @@ import {
 } from "three-mesh-bvh";
 import { motion } from "framer-motion-3d";
 import { TimelineTrackProps } from "./types";
-import { PlainMessage } from "@bufbuild/protobuf";
 
 const TimelineTracks = ({
   locationRecords,
@@ -82,9 +80,7 @@ const TimelineTracks = ({
       {}
     );
 
-    Object.entries(locationRecords).forEach(([_, locationRecords], index) => {
-      const records = locationRecords as PlainMessage<LocationHistoryRecord>[];
-
+    Object.entries(locationRecords).forEach(([_, records], index) => {
       records.forEach((record) => {
         const trackBottom =
           canvasHeight / 2 -
@@ -154,7 +150,11 @@ const TimelineTracks = ({
   const render = useMemo(
     () =>
       zoneIds
-        .sort((first, second) => first.id - second.id)
+        .sort((first, second) =>
+          first.config && second.config
+            ? first.config.name.localeCompare(second.config.name)
+            : 0
+        )
         .map(({ id: zoneId }, index) => {
           let color = new Color(colors[index]);
 
@@ -212,7 +212,7 @@ const TimelineTracks = ({
 
 export default TimelineTracks;
 
-const getBufferGeometryFromPoints = (
+export const getBufferGeometryFromPoints = (
   left: number,
   right: number,
   top: number,
