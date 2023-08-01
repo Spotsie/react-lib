@@ -64,7 +64,7 @@ export const Timeline = ({
       gl.domElement.clientWidth;
 
     camera.position.setX(cameraPosition);
-    camera.scale.setX(Math.min(cameraScale, MAX_SCALE));
+    camera.scale.setX(Math.min(cameraScale * 0.8, MAX_SCALE));
     camera.updateProjectionMatrix();
 
     invalidate();
