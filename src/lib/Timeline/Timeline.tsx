@@ -239,7 +239,11 @@ export const Timeline = ({
     }
 
     const zoneIndex = zoneIds
-      .sort((first, second) => first.id - second.id)
+      .sort((first, second) =>
+        first.config && second.config
+          ? first.config.name.localeCompare(second.config.name)
+          : 0
+      )
       .findIndex((zoneId) => zoneId.id === tooltip.zone.id);
     const zoneColor = colors[zoneIndex];
 
