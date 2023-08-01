@@ -69,7 +69,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
             <Canvas
               style={{
                 height: "100%",
-                width: `calc(100% - ${6 + leftMarginInRem / 1.5}rem)`,
+                width: `calc(100% - ${6 + leftMarginInRem}rem)`,
                 left: `${4 + leftMarginInRem}rem`,
                 overflow: "hidden",
                 position: "relative",
