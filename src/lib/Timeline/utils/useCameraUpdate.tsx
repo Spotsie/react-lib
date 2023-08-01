@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 const useCameraUpdate = () => {
   const camera = useThree(({ camera }) => camera);
 
-  const [lastCameraPos, setLastCameraPos] = useState<{
-    x: number;
-    y: number;
-  }>({ x: camera.position.x, y: camera.position.y });
+  const [lastCameraPos, setLastCameraPos] = useState({
+    x: camera.position.x,
+    y: camera.position.y,
+  });
   const [lastCameraScale, setLastCameraScale] = useState(camera.scale.x);
   const [cameraUpdate, setCameraUpdate] = useState(camera);
 

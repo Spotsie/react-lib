@@ -270,11 +270,11 @@ export const Timeline = ({
     const timeFrameStart = timeFrame.start.getTime() / 1000;
     const timeFrameEnd = timeFrame.end.getTime() / 1000;
 
-    if (cameraStart - round / 1.5 <= timeFrameStart) {
+    if (cameraStart <= timeFrameStart + camera.scale.x * 100) {
       onScroll({
         start: new Date((cameraStart - round * 2) * 1000),
       });
-    } else if (cameraEnd + round / 1.5 >= timeFrameEnd) {
+    } else if (cameraEnd >= timeFrameEnd - camera.scale.x * 100) {
       onScroll({
         end: new Date((cameraEnd + round * 2) * 1000),
       });
@@ -296,13 +296,25 @@ export const Timeline = ({
         </mesh>
       </group>
 
-      <DragControls dragSensitivity={1} />
+      <DragControls
+        dragSensitivity={1}
+        clamp={{
+          start: timeFrame.start.getTime() / 1000,
+          end: timeFrame.end.getTime() / 1000,
+        }}
+      />
 
       <ScrollControls
+        timeFrame={{
+          start: timeFrame.start.getTime() / 1000,
+          end: timeFrame.end.getTime() / 1000,
+        }}
         zoomSensitivity={zoomSensitivity}
         maxScroll={
           Object.keys(timelineData).length * (trackHeight + trackGap) +
-          trackTopOffset
+          trackTopOffset +
+          // Slider height
+          35
         }
       />
     </>
