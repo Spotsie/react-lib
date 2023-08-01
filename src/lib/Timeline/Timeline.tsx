@@ -272,11 +272,11 @@ export const Timeline = ({
 
     if (cameraStart <= timeFrameStart + camera.scale.x * 100) {
       onScroll({
-        start: new Date((cameraStart - round * 2) * 1000),
+        start: new Date((cameraStart - round) * 1000),
       });
     } else if (cameraEnd >= timeFrameEnd - camera.scale.x * 100) {
       onScroll({
-        end: new Date((cameraEnd + round * 2) * 1000),
+        end: new Date((cameraEnd + round) * 1000),
       });
     }
   }, [camera.position.x]);
