@@ -168,10 +168,13 @@ export const Timeline = ({
 
     clearTimeout(timeout.current);
 
-    const hoveredMesh = e.intersections[0].object as Mesh<
-      BufferGeometry,
-      MeshBasicMaterial
-    >;
+    const hoveredMesh = e.intersections.find(
+      (intersection) => intersection.object.userData.zone
+    )?.object as Mesh<BufferGeometry, MeshBasicMaterial> | undefined;
+    if (!hoveredMesh) {
+      return;
+    }
+
     // If tooltip is in the same zone, update only tooltip position
     if (tooltip && hoveredMesh.userData.zone === tooltip.zone) {
       setTooltip({
