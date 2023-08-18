@@ -167,8 +167,12 @@ export function Map({
       ["approximation-layer", "zone-fill-layer"],
       onClickRef.current
     );
-    mapRef.current.moveLayer("approximation-layer");
-    mapRef.current.moveLayer("tracker-id-layer");
+    if (mapRef.current.getLayer("approximation-layer")) {
+      mapRef.current.moveLayer("approximation-layer");
+    }
+    if (mapRef.current.getLayer("tracker-id-layer")) {
+      mapRef.current.moveLayer("tracker-id-layer");
+    }
   };
 
   const onClickRef = useRef<
