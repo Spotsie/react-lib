@@ -1,6 +1,6 @@
 {
   "name": "@spotsie/react-lib",
-  "version": "0.11.6",
+  "version": "0.11.7",
   "license": "MIT",
   "author": "Ante Gulin",
   "main": "./dist/react-lib.js",

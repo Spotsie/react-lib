@@ -23,7 +23,6 @@ const getZoneFillLayerProps = (colors: Array<string>): LayerProps => ({
 
 const zonePopulationLayerProps: LayerProps = {
   id: "zone-population-layer",
-  beforeId: "tracker-id-layer",
   type: "symbol",
   layout: {
     "icon-image": "marker-11",
@@ -52,9 +51,10 @@ const zonePopulationLayerProps: LayerProps = {
 type Props = {
   data: FeatureCollection;
   colors: Array<string>;
+  approximationMode: boolean;
 };
 
-const ZoneLayer = ({ data, colors }: Props) => (
+const ZoneLayer = ({ data, colors, approximationMode }: Props) => (
   <Source
     data={{
       type: "FeatureCollection",
@@ -69,7 +69,10 @@ const ZoneLayer = ({ data, colors }: Props) => (
     {...sourceProps}
   >
     <Layer {...zonePopulationLayerProps} />
-    <Layer {...getZoneFillLayerProps(colors)} />
+    <Layer
+      {...getZoneFillLayerProps(colors)}
+      beforeId={approximationMode ? "tracker-id-layer" : undefined}
+    />
   </Source>
 );
 

@@ -265,7 +265,11 @@ export function Map({
       {mode === "approximation" && (
         <ApproximationLayer data={subjectFeatureCollection} />
       )}
-      <ZoneLayer data={zoneFeatureCollection} colors={colors} />
+      <ZoneLayer
+        data={zoneFeatureCollection}
+        colors={colors}
+        approximationMode={mode === "approximation"}
+      />
 
       {popup && (
         <Popup
