@@ -54,6 +54,7 @@ export type MapProps = {
   };
   mode?: MapMode;
   colors?: Array<string>;
+  mapRef?: React.RefObject<MapRef> | null;
 } & Omit<MapboxProps, "fog" | "terrain" | "mapStyle">;
 
 const scaleControlStyle = {
@@ -75,6 +76,7 @@ export function Map({
   cursor = "crosshair",
   mode = "normal",
   colors = ["#366fe0"],
+  mapRef: customMapRef = null,
   ...props
 }: MapProps) {
   const pinMarkers = useMemo(
@@ -89,7 +91,8 @@ export function Map({
       )),
     [pins]
   );
-  const mapRef = useRef<MapRef>(null);
+  const newMapRef = useRef<MapRef>(null);
+  const mapRef = customMapRef ?? newMapRef;
 
   const onStyleData = () => {
     const circleImage = new Image(167, 167);
