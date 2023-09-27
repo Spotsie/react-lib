@@ -194,7 +194,7 @@ const ScrollControls = ({ zoomSensitivity, maxScroll, timeFrame }: Props) => {
       canvas.removeEventListener("touchend", dragUpEvent);
       canvas.removeEventListener("touchmove", dragEvent);
     };
-  }, [camera, canvas, zoomSensitivity, invalidate, maxScroll]);
+  }, [camera, canvas, zoomSensitivity, invalidate, maxScroll, timeFrame]);
 
   const meshRef = useRef<Object3DNode<Mesh, typeof Mesh>>(null);
 
