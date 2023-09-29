@@ -53,7 +53,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
             backgroundColor: "#f7fafc",
             overflow: "hidden",
             height: "calc(100% - 6rem)",
-            paddingBottom: "6rem",
+            paddingBottom: "8rem",
             userSelect: "none",
             ...style,
           }}
@@ -63,7 +63,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
               position: "relative",
               height: "100%",
               overflow: "hidden",
-              top: "4.2rem",
+              top: "6.2rem",
             }}
           >
             <Canvas

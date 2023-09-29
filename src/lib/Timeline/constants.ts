@@ -11,7 +11,7 @@ export const HOVER_ANIMATION_DELAY = 150;
 export const TIME_MARKER_LABEL_STYLE: CSSProperties = {
   position: "absolute",
   color: "#cbd5e0",
-  top: "45px",
+  top: "74px",
   fontFamily: "Helvetica",
   fontWeight: "700",
   fontSize: "0.75rem",
@@ -28,7 +28,7 @@ export const DATE_MARKER_LABEL_STYLE: CSSProperties = {
   color: "#a0aec0",
   fontFamily: "Helvetica",
   fontSize: "0.75rem",
-  top: "20px",
+  top: "52px",
 };
 
 export const DATE_MARKER_STYLE: Partial<LineDashedMaterial> = {

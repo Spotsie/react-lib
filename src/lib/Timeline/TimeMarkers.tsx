@@ -108,7 +108,10 @@ const TimeMarkers = ({
         camera.position.x - (gl.domElement.clientWidth * camera.scale.x) / 2;
       currDateMarker.innerHTML = format(time * 1000, timeFormat);
 
-      assignStyling(currDateMarker, timeMarkerLabelStyle);
+      assignStyling(currDateMarker, {
+        ...timeMarkerLabelStyle,
+        top: "25px",
+      });
 
       document.getElementById(TIMELINE_PARENT_ID)?.appendChild(currDateMarker);
       currDateMarkerRef.current = currDateMarker;
