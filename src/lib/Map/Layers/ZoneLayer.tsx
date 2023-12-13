@@ -17,7 +17,12 @@ const getZoneFillLayerProps = (colors: Array<string>): LayerProps => ({
       property: "index",
       stops: colors.map((color, index) => [index, color]),
     } as any,
-    "fill-opacity": 0.2,
+    "fill-opacity": [
+      "case",
+      ["boolean", ["get", "highlighted"], false],
+      0.8,
+      0.2,
+    ],
   },
 });
 
@@ -35,7 +40,7 @@ const zonePopulationLayerProps: LayerProps = {
       ")",
     ],
     "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
-    "text-size": 11,
+    "text-size": 13,
     "text-transform": "uppercase",
     "text-letter-spacing": 0.05,
     "text-offset": [0, 2.4],
