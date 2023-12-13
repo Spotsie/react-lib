@@ -41,7 +41,9 @@ export type MapProps = {
   children?: ReactNode;
   mapTheme?: keyof typeof mapThemes;
   onFeatureClick?(properties: { [key: string]: any }): ReactNode;
-  onZoneClick?(properties: { [key: string]: any }): ReactNode;
+  onZoneClick?(properties: {
+    [key: string]: any;
+  }): ReactNode | null | undefined;
   zoneFeatureCollection: FeatureCollection;
   subjectFeatureCollection: FeatureCollection<Point>;
   iconFeatureCollection?: FeatureCollection;
@@ -153,6 +155,11 @@ export function Map({
         element = onZoneClick(features.properties ?? {});
       }
 
+      if (!element) {
+        setPopup(null);
+        return;
+      }
+
       if (
         popup &&
         coordinates[0] === popup.coordinates[0] &&
@@ -223,6 +230,11 @@ export function Map({
         ];
 
         element = onZoneClick(features.properties ?? {});
+      }
+
+      if (!element) {
+        setPopup(null);
+        return;
       }
 
       if (
