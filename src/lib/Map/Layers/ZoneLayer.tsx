@@ -2,7 +2,7 @@ import React from "react";
 import { Layer, LayerProps, Source, SourceProps } from "react-map-gl";
 import { FeatureCollection } from "../types";
 
-const sourceProps: SourceProps & any = {
+const sourceProps: SourceProps = {
   id: "zone-source",
   type: "geojson",
   cluster: false,
@@ -68,6 +68,7 @@ const ZoneLayer = ({ data, colors, approximationMode }: Props) => (
         properties: {
           ...f.properties,
           index,
+          geometry: (f as any).geometry,
         },
       })),
     }}

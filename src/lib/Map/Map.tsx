@@ -141,13 +141,14 @@ export function Map({
 
       let coordinates: [number, number] = [0, 0];
       let element: ReactNode = <></>;
+      const geometry = JSON.parse(features.properties?.geometry);
 
       if (features.layer.id === "approximation-layer" && onFeatureClick) {
-        coordinates = (features as any).geometry.coordinates.slice();
+        coordinates = geometry.slice();
 
         element = onFeatureClick(features.properties ?? {});
       } else if (features.layer.id === "zone-fill-layer" && onZoneClick) {
-        coordinates = centroid(features.geometry).geometry.coordinates as [
+        coordinates = centroid(geometry).geometry.coordinates as [
           number,
           number
         ];
@@ -218,13 +219,14 @@ export function Map({
 
       let coordinates: [number, number] = [0, 0];
       let element: ReactNode = <></>;
+      const geometry = JSON.parse(features.properties?.geometry);
 
       if (features.layer.id === "approximation-layer" && onFeatureClick) {
-        coordinates = (features as any).geometry.coordinates.slice();
+        coordinates = geometry.slice();
 
         element = onFeatureClick(features.properties ?? {});
       } else if (features.layer.id === "zone-fill-layer" && onZoneClick) {
-        coordinates = centroid(features.geometry).geometry.coordinates as [
+        coordinates = centroid(geometry).geometry.coordinates as [
           number,
           number
         ];
