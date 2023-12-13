@@ -75,10 +75,11 @@ const ZoneLayer = ({ data, colors, approximationMode }: Props) => (
     {...sourceProps}
   >
     <Layer {...zonePopulationLayerProps} />
-    <Layer
-      {...getZoneFillLayerProps(colors)}
-      beforeId={approximationMode ? "tracker-id-layer" : undefined}
-    />
+    {approximationMode ? (
+      <Layer {...getZoneFillLayerProps(colors)} beforeId="tracker-id-layer" />
+    ) : (
+      <Layer {...getZoneFillLayerProps(colors)} />
+    )}
   </Source>
 );
 
