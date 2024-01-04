@@ -74,6 +74,11 @@ const TimelineTracks = ({
     if (Object.keys(locationRecords).length === 0) {
       return;
     }
+    meshRefs.current.forEach((ref) => {
+      ref.geometry = new BufferGeometry();
+      ref.userData = {};
+      ref.updateMatrix?.();
+    });
 
     const geosByZoneId: { [zoneId: number]: BufferGeometry[] } = zoneIds.reduce(
       (acc, curr) => ({ ...acc, [curr.id]: [] }),
