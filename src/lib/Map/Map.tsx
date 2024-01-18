@@ -256,7 +256,7 @@ export function Map({
       ["approximation-layer", "zone-fill-layer"],
       onClickRef.current
     );
-  }, [onZoneClick, popup]);
+  }, [zoneFeatureCollection, onZoneClick, popup]);
 
   return (
     <ReactMapGL
