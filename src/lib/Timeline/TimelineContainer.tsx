@@ -41,9 +41,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
       3
     );
 
-    return zoneIds.length !== 0 &&
-      Object.keys(timelineData).length !== 0 &&
-      colors.length !== 0 ? (
+    return zoneIds.length !== 0 && colors.length !== 0 ? (
       <div style={{ position: "relative", height: "100%" }}>
         <div
           id={TIMELINE_PARENT_ID}
