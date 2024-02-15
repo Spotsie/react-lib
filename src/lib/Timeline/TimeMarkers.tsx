@@ -1,5 +1,4 @@
 import { useFrame, useThree } from "@react-three/fiber";
-import format from "date-fns/format";
 import { useRef, useEffect, CSSProperties, useMemo } from "react";
 import {
   BufferGeometry,
@@ -16,7 +15,7 @@ import { TIMELINE_PARENT_ID } from "./constants";
 interface Props {
   period: { start: number; end: number };
   interval: number;
-  timeFormat?: string;
+  showSeconds?: boolean;
 
   hideMarker?: boolean;
 
@@ -26,6 +25,7 @@ interface Props {
   isDate?: boolean;
 
   leftMarginInRem: number;
+  locale: "en" | "hr";
 }
 
 const TIME_MARKER_VERTICAL_POINTS = (xPos: number) => [
@@ -36,12 +36,13 @@ const TIME_MARKER_VERTICAL_POINTS = (xPos: number) => [
 const TimeMarkers = ({
   period,
   interval,
-  timeFormat = "hh:mm:ss",
+  showSeconds = false,
   hideMarker,
   timeMarkerStyle,
   timeMarkerLabelStyle,
   isDate,
   leftMarginInRem,
+  locale,
 }: Props) => {
   const meshRef = useRef<Mesh>(null);
   const lineRef = useRef<LineSegments>(null);
@@ -106,7 +107,9 @@ const TimeMarkers = ({
     if (isDate) {
       const time =
         camera.position.x - (gl.domElement.clientWidth * camera.scale.x) / 2;
-      currDateMarker.innerHTML = format(time * 1000, timeFormat);
+      currDateMarker.innerHTML = Intl.DateTimeFormat(["bin", locale]).format(
+        new Date(time * 1000)
+      );
 
       assignStyling(currDateMarker, {
         ...timeMarkerLabelStyle,
@@ -123,7 +126,10 @@ const TimeMarkers = ({
 
     const geoms = xPositions.map((xPos) => {
       const text = document.createElement("div");
-      text.innerHTML = format(xPos * 1000, timeFormat);
+      text.innerHTML = Intl.DateTimeFormat(["bin", locale], {
+        timeStyle: showSeconds ? "medium" : "short",
+      }).format(new Date(xPos * 1000));
+      text.style.whiteSpace = "nowrap";
       flexElement.appendChild(text);
 
       const geom = new BufferGeometry();
@@ -152,7 +158,7 @@ const TimeMarkers = ({
     gl.domElement.clientHeight,
     gl.domElement.clientWidth,
     period.start,
-    timeFormat,
+    showSeconds,
     timeMarkerLabelStyle,
     xPositions,
   ]);

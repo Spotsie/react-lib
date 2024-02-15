@@ -31,6 +31,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
       onScroll,
       style,
       leftMarginInRem = 0,
+      locale = "en",
       ...props
     }: TimelineProps,
     ref
@@ -100,6 +101,7 @@ export const TimelineContainer = forwardRef<HTMLDivElement, TimelineProps>(
                 zoneIds={zoneIds}
                 onScroll={onScroll}
                 leftMarginInRem={leftMarginInRem}
+                locale={locale}
                 {...props}
               />
             </Canvas>

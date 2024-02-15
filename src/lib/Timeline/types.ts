@@ -12,7 +12,7 @@ export type TooltipData = {
 export type MarkerBreakpoint = {
   minScale: number;
   interval: Duration;
-  timeFormat: string;
+  showSeconds: boolean;
 };
 
 export type TimelineProps = {
@@ -38,6 +38,7 @@ export type TimelineProps = {
   style?: CSSProperties;
 
   leftMarginInRem?: number;
+  locale?: "en" | "hr";
 };
 
 export type TimelineCanvasProps = {
@@ -60,6 +61,7 @@ export type TimelineCanvasProps = {
   onScroll?(timeFrame: { start?: Date; end?: Date }): void;
 
   leftMarginInRem: number;
+  locale: "en" | "hr";
 };
 
 export type TimelineTrackProps = {

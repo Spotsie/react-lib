@@ -40,6 +40,7 @@ export const Timeline = ({
   onScroll,
 
   leftMarginInRem,
+  locale,
 }: TimelineCanvasProps) => {
   const { gl, invalidate } = useThree(({ gl, invalidate }) => ({
     gl,
@@ -105,10 +106,11 @@ export const Timeline = ({
       <TimeMarkers
         period={{ start: currentCameraTime, end: endCameraTime }}
         interval={interval}
-        timeFormat={breakpoint.timeFormat}
+        showSeconds={breakpoint.showSeconds}
         timeMarkerLabelStyle={TIME_MARKER_LABEL_STYLE}
         timeMarkerStyle={TIME_MARKER_STYLE}
         leftMarginInRem={leftMarginInRem}
+        locale={locale}
       />
     );
   }, [camera.position.x, camera.scale.x, gl.domElement.clientWidth]);
@@ -127,7 +129,6 @@ export const Timeline = ({
     const endCameraTime = Number(endScaled.toFixed(1));
 
     const interval = durationToSeconds({ days: 1 });
-    const dateFormat = "dd.MM.yyyy.";
 
     currentCameraTime =
       Math.ceil(currentCameraTime / interval) * interval +
@@ -137,11 +138,11 @@ export const Timeline = ({
       <TimeMarkers
         period={{ start: currentCameraTime, end: endCameraTime }}
         interval={interval}
-        timeFormat={dateFormat}
         timeMarkerLabelStyle={DATE_MARKER_LABEL_STYLE}
         timeMarkerStyle={DATE_MARKER_STYLE}
         isDate
         leftMarginInRem={leftMarginInRem}
+        locale={locale}
       />
     );
   }, [camera.position.x, camera.scale.x, gl.domElement.clientWidth]);
