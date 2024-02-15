@@ -215,7 +215,7 @@ const ScrollControls = ({ zoomSensitivity, maxScroll, timeFrame }: Props) => {
     };
   }, []);
 
-  const sliderHeight = 35;
+  const sliderHeight = 15;
 
   const containerMeshRef = useRef<Mesh>(null);
 
