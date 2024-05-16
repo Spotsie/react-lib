@@ -15,6 +15,11 @@ export * from "./Slices/Zone/zoneReducers";
 export * from "./Slices/Zone/zoneSelectors";
 export * from "./Slices/Zone/zoneSlice";
 
+
+export * from "./Slices/Deployment/deploymentReducers";
+export * from "./Slices/Deployment/deploymentSelector";
+export * from "./Slices/Deployment/deploymentSlice";
+
 export * from "./Slices/utils/store";
 
 // Date exports
